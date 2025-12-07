@@ -140,7 +140,10 @@ public class WorldSettings {
         public int seaLevel;
         public int lavaLevel;
         
-        public Properties(SpawnType spawnType, int worldHeight, int worldDepth, int seaLevel, int lavaLevel) {
+        public Properties(SpawnType spawnType, int worldHeight,
+						  int worldMinY, float riverScale, int structureSeparation,
+						  boolean enableFloatingIsland, float FloatingIslandChance,
+						  int FloatingIslandHeight, int worldDepth, int seaLevel, int lavaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
 			this.worldMinY = worldMinY;
