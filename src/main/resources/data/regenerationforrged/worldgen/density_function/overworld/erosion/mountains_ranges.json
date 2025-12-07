@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:abs",
-  "argument": {
-    "type": "minecraft:noise",
-    "noise": "regenerationforrged:erosion/ranges",
-    "xz_scale": 0.5,
-    "y_scale": 0.25
-  }
-}
