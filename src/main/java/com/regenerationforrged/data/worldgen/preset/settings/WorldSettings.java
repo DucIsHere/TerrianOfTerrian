@@ -37,7 +37,10 @@ public class WorldSettings {
     		Codec.FLOAT.optionalFieldOf("continentSizeVariance", 0.25F).forGetter((o) -> o.continentSizeVariance),
     		Codec.INT.optionalFieldOf("continentNoiseOctaves", 5).forGetter((o) -> o.continentNoiseOctaves),
     		Codec.FLOAT.optionalFieldOf("continentNoiseGain", 0.26F).forGetter((o) -> o.continentNoiseGain),
-    		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity)
+    		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity),
+			Codec.FLOAT.optionalFieldOf("continentWarpStrength", 25F).forGetter((o) -> o.continentsWarpStrength),
+			Codec.FLOAT.optionalFieldOf("continentWarpScale" 200F).forGetter((o) -> o.continentWarpScale),
+			Codec.FLOAT.optionalFieldOf("coastSharpness" 0.5F).forGetter((o) -> o.coastSharpness)
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;
@@ -49,8 +52,11 @@ public class WorldSettings {
         public int continentNoiseOctaves;
         public float continentNoiseGain;
         public float continentNoiseLacunarity;
+		public float continentWarpStrength;
+		public float contientWarpScale;
+		public float coastSharpness;
         
-        public Continent(ContinentType continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity) {
+        public Continent(ContinentType continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity, float continentWarpStrength, float continentWarpScale, float coastSharpness) {
             this.continentType = continentType;
             this.continentShape = continentShape;
             this.continentScale = continentScale;
@@ -60,10 +66,13 @@ public class WorldSettings {
             this.continentNoiseOctaves = continentNoiseOctaves;
             this.continentNoiseGain = continentNoiseGain;
             this.continentNoiseLacunarity = continentNoiseLacunarity;
+			this.continentWarpStrength = continentWarpStrength;
+			this.continentWarpScale = continentWarpScale;
+			this.coastSharpness = coastSharpness;
         }
         
         public Continent copy() {
-        	return new Continent(this.continentType, this.continentShape, this.continentScale, this.continentJitter, this.continentSkipping, this.continentSizeVariance, this.continentNoiseOctaves, this.continentNoiseGain, this.continentNoiseLacunarity);
+        	return new Continent(this.continentType, this.continentShape, this.continentScale, this.continentJitter, this.continentSkipping, this.continentSizeVariance, this.continentNoiseOctaves, this.continentNoiseGain, this.continentNoiseLacunarity, this.continentWarpStrength, this.continentWarpScale, this.coastSharpness);
         }
     }
     
@@ -75,7 +84,8 @@ public class WorldSettings {
     		Codec.FLOAT.fieldOf("shallowOcean").forGetter((o) -> o.shallowOcean),
     		Codec.FLOAT.fieldOf("beach").forGetter((o) -> o.beach),
     		Codec.FLOAT.fieldOf("coast").forGetter((o) -> o.coast),
-    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland)
+    		Codec.FLOAT.fieldOf("inland").forGetter((o) -> o.inland),
+			Codec.FLOAT.optionalFieldOf("coastLineBlend" 0.25F).forGetter((o) -> o.coastLineBlend)
         ).apply(instance, ControlPoints::new));
 
     	public float mushroomFieldsInland;
@@ -85,8 +95,9 @@ public class WorldSettings {
         public float beach;
         public float coast;
         public float inland;
+		public float coastLineBlend
         
-        public ControlPoints(float mushroomFieldsInland, float mushroomFieldsCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland) {
+        public ControlPoints(float mushroomFieldsInland, float mushroomFieldsCoast, float deepOcean, float shallowOcean, float beach, float coast, float inland, float coastLineBlend) {
         	this.mushroomFieldsInland = mushroomFieldsInland;
         	this.mushroomFieldsCoast = mushroomFieldsCoast;
             this.deepOcean = deepOcean;
@@ -94,10 +105,11 @@ public class WorldSettings {
             this.beach = beach;
             this.coast = coast;
             this.inland = inland;
+			this.coastLineBlend = coastLineBlend;
         }
         
         public ControlPoints copy() {
-        	return new ControlPoints(this.mushroomFieldsInland, this.mushroomFieldsCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland);
+        	return new ControlPoints(this.mushroomFieldsInland, this.mushroomFieldsCoast, this.deepOcean, this.shallowOcean, this.beach, this.coast, this.inland, this.coatsLineBlend);
         }
     }
     
@@ -105,7 +117,7 @@ public class WorldSettings {
     	public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		SpawnType.CODEC.fieldOf("spawnType").forGetter((o) -> o.spawnType),
     		Codec.INT.fieldOf("worldHeight").forGetter((o) -> o.worldHeight),
-    		Codec.INT.optionalFieldOf("worldDepth", 64).forGetter((o) -> o.worldDepth),
+    		Codec.INT.optionalFieldOf("worldDepth", -128).forGetter((o) -> o.worldDepth),
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel),
     		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel)
     	).apply(instance, Properties::new));
@@ -130,7 +142,7 @@ public class WorldSettings {
         
         @Deprecated
         public int terrainScaler() {
-        	return Math.min(this.worldHeight, 256);
+        	return Math.min(this.worldHeight, -640);
         }
     }
 }
