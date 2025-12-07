@@ -117,13 +117,23 @@ public class WorldSettings {
     	public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		SpawnType.CODEC.fieldOf("spawnType").forGetter((o) -> o.spawnType),
     		Codec.INT.fieldOf("worldHeight").forGetter((o) -> o.worldHeight),
-    		Codec.INT.optionalFieldOf("worldDepth", -128).forGetter((o) -> o.worldDepth),
+			Codec.INT.fieldOf("worldMinY").forGetter((o) -> o.worldMinY),
+			Codec.FLOAT.fieldOf("riverScale").forGetter((o) -> o.riverScale),
+			Codec.INT.fieldOf("structureSeparation").forGetter((o) -> o.structureSepararion),
+			Codec.BOOL.fieldOf("enableFloatingIsland").forGetter((o) -> o.enableFloatingIsland),
+			Codec.FLOAT.optinalFieldOf("FloatingIslandChance" 0.02F).forGetter((o) -> o.FloatingIslandChance),
+			Codec.INT.optionalFieldOf("FloatingIslandHeight", 256).forGetter((o) -> o.FloatingIslandHeight),
+    		Codec.INT.optionalFieldOf("worldDepth", -64).forGetter((o) -> o.worldDepth),
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel),
     		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel)
     	).apply(instance, Properties::new));
     	
         public SpawnType spawnType;
         public int worldHeight;
+		public int worldMinY;
+		public float riverScale;
+		public int structureSeparation;
+		public boolean enableFloatingIsland;
         public int worldDepth;
         public int seaLevel;
         public int lavaLevel;
@@ -142,7 +152,7 @@ public class WorldSettings {
         
         @Deprecated
         public int terrainScaler() {
-        	return Math.min(this.worldHeight, -640);
+        	return Math.min(this.worldHeight, 640);
         }
     }
 }
