@@ -1,4 +1,4 @@
-package com.regenerationforrged.data.worldgen.preset;
+package com.regenerationforrged.data.worldgen.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -34,35 +34,51 @@ public class RiverSettings {
     }
 
     public static class River {
-    	public static final Codec<River> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Codec.INT.fieldOf("bedDepth").forGetter((o) -> o.bedDepth),
-    		Codec.INT.fieldOf("minBankHeight").forGetter((o) -> o.minBankHeight),
-    		Codec.INT.fieldOf("maxBankHeight").forGetter((o) -> o.maxBankHeight),
-    		Codec.INT.fieldOf("bankWidth").forGetter((o) -> o.bankWidth),
-    		Codec.INT.fieldOf("bedWidth").forGetter((o) -> o.bedWidth),
-    		Codec.FLOAT.fieldOf("fade").forGetter((o) -> o.fade)
-    	).apply(instance, River::new));
-    	
-        public int bedDepth;
-        public int minBankHeight;
-        public int maxBankHeight;
-        public int bedWidth;
-        public int bankWidth;
-        public float fade;
-        
-        public River(int bedDepth, int minBankHeight, int maxBankHeight, int bankWidth, int bedWidth, float fade) {
-            this.bedDepth = bedDepth;
-            this.minBankHeight = minBankHeight;
-            this.maxBankHeight = maxBankHeight;
-            this.bankWidth = bankWidth;
-            this.bedWidth = bedWidth;
-            this.fade = fade;
-        }
-        
-        public River copy() {
-        	return new River(this.bedDepth, this.minBankHeight, this.maxBankHeight, this.bankWidth, this.bedWidth, this.fade);
-        }
+    public static final Codec<River> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.INT.fieldOf("bedDepth").forGetter(o -> o.bedDepth),
+        Codec.INT.fieldOf("minBankHeight").forGetter(o -> o.minBankHeight),
+        Codec.INT.fieldOf("maxBankHeight").forGetter(o -> o.maxBankHeight),
+        Codec.INT.fieldOf("bankWidth").forGetter(o -> o.bankWidth),
+        Codec.INT.fieldOf("bedWidth").forGetter(o -> o.bedWidth),
+        Codec.FLOAT.fieldOf("fade").forGetter(o -> o.fade),
+        Codec.FLOAT.optionalFieldOf("slopeFactor", 0.002f).forGetter(o -> o.slopeFactor),
+        Codec.FLOAT.optionalFieldOf("profileCurve", 0.5f).forGetter(o -> o.profileCurve),
+        Codec.FLOAT.optionalFieldOf("erosionStrength", 0.01f).forGetter(o -> o.erosionStrength)
+
+    ).apply(instance, River::new));
+
+    public int bedDepth;
+    public int minBankHeight;
+    public int maxBankHeight;
+    public int bankWidth;
+    public int bedWidth;
+    public float fade;
+    public float slopeFactor;
+    public float profileCurve;
+    public float erosionStrength;
+
+    public River(int bedDepth, int minBankHeight, int maxBankHeight, int bankWidth, int bedWidth, float fade,
+                 float slopeFactor, float profileCurve, float erosionStrength) {
+        this.bedDepth = bedDepth;
+        this.minBankHeight = minBankHeight;
+        this.maxBankHeight = maxBankHeight;
+        this.bankWidth = bankWidth;
+        this.bedWidth = bedWidth;
+        this.fade = fade;
+
+        this.slopeFactor = slopeFactor;
+        this.profileCurve = profileCurve;
+        this.erosionStrength = erosionStrength;
     }
+
+    public River copy() {
+        return new River(
+            bedDepth, minBankHeight, maxBankHeight, bankWidth, bedWidth, fade,
+            slopeFactor, profileCurve, erosionStrength
+        );
+    }
+}
+
     
     public static class Lake {
     	public static final Codec<Lake> CODEC = RecordCodecBuilder.create(instance -> instance.group(
