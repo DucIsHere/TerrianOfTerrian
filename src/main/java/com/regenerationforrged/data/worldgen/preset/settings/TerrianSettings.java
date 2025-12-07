@@ -75,27 +75,67 @@ public class TerrainSettings {
     }
     
     public static class Terrain {
-    	public static final Codec<Terrain> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Codec.FLOAT.fieldOf("weight").forGetter((o) -> o.weight),
-    		Codec.FLOAT.fieldOf("baseScale").forGetter((o) -> o.baseScale),
-    		Codec.FLOAT.fieldOf("verticalScale").forGetter((o) -> o.verticalScale),
-    		Codec.FLOAT.fieldOf("horizontalScale").forGetter((o) -> o.horizontalScale)
-    	).apply(instance, Terrain::new));
-    	
-        public float weight;
-        public float baseScale;
-        public float verticalScale;
-        public float horizontalScale;
-        
-        public Terrain(float weight, float baseScale, float verticalScale, float horizontalScale) {
-            this.weight = weight;
-            this.baseScale = baseScale;
-            this.verticalScale = verticalScale;
-            this.horizontalScale = horizontalScale;
-        }
-        
-        public Terrain copy() {
-        	return new Terrain(this.weight, this.baseScale, this.verticalScale, this.horizontalScale);
-        }
+    public static final Codec<Terrain> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.FLOAT.fieldOf("weight").forGetter(o -> o.weight),
+        Codec.FLOAT.fieldOf("baseScale").forGetter(o -> o.baseScale),
+        Codec.FLOAT.fieldOf("verticalScale").forGetter(o -> o.verticalScale),
+        Codec.FLOAT.fieldOf("horizontalScale").forGetter(o -> o.horizontalScale),
+        Codec.FLOAT.fieldOf("baseHeight").forGetter(o -> o.baseHeight),
+        Codec.INT.fieldOf("continentScale").forGetter(o -> o.continentScale),
+        Codec.FLOAT.fieldOf("continentJitter").forGetter(o -> o.continentJitter),
+        Codec.FLOAT.fieldOf("slopeScale").forGetter(o -> o.slopeScale),
+        Codec.FLOAT.fieldOf("valleyDepth").forGetter(o -> o.valleyDepth),
+        Codec.FLOAT.fieldOf("valleyWidth").forGetter(o -> o.valleyWidth),
+        Codec.FLOAT.fieldOf("mountainSharpness").forGetter(o -> o.mountainSharpness),
+        Codec.FLOAT.fieldOf("mountainScale").forGetter(o -> o.mountainScale),
+        Codec.FLOAT.fieldOf("plateauHeight").forGetter(o -> o.plateauHeight),
+        Codec.INT.fieldOf("aquiferDepthOffset").forGetter(o -> o.aquiferDepthOffset)
+    ).apply(instance, Terrain::new));
+
+    public float weight;
+    public float baseScale;
+    public float verticalScale;
+    public float horizontalScale;
+    public float baseHeight;
+    public int continentScale;
+    public float continentJitter;
+    public float slopeScale;
+    public float valleyDepth;
+    public float valleyWidth;
+    public float mountainSharpness;
+    public float mountainScale;
+    public float plateauHeight;
+    public int aquiferDepthOffset;
+
+    public Terrain(
+            float weight, float baseScale, float verticalScale, float horizontalScale,
+            float baseHeight, int continentScale, float continentJitter, float slopeScale,
+            float valleyDepth, float valleyWidth, float mountainSharpness, float mountainScale,
+            float plateauHeight, int aquiferDepthOffset
+    ) {
+        this.weight = weight;
+        this.baseScale = baseScale;
+        this.verticalScale = verticalScale;
+        this.horizontalScale = horizontalScale;
+
+        this.baseHeight = baseHeight;
+        this.continentScale = continentScale;
+        this.continentJitter = continentJitter;
+        this.slopeScale = slopeScale;
+        this.valleyDepth = valleyDepth;
+        this.valleyWidth = valleyWidth;
+        this.mountainSharpness = mountainSharpness;
+        this.mountainScale = mountainScale;
+        this.plateauHeight = plateauHeight;
+        this.aquiferDepthOffset = aquiferDepthOffset;
+    }
+
+    public Terrain copy() {
+        return new Terrain(
+            weight, baseScale, verticalScale, horizontalScale,
+            baseHeight, continentScale, continentJitter, slopeScale,
+            valleyDepth, valleyWidth, mountainSharpness, mountainScale,
+            plateauHeight, aquiferDepthOffset
+        );
     }
 }
