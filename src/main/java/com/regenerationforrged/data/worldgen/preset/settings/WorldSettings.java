@@ -134,6 +134,8 @@ public class WorldSettings {
 		public float riverScale;
 		public int structureSeparation;
 		public boolean enableFloatingIsland;
+		public float FloatingIslandChance;
+		public int FloatingIslandHeight;
         public int worldDepth;
         public int seaLevel;
         public int lavaLevel;
@@ -141,13 +143,22 @@ public class WorldSettings {
         public Properties(SpawnType spawnType, int worldHeight, int worldDepth, int seaLevel, int lavaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
+			this.worldMinY = worldMinY;
+			this.riverScale = riverScale;
+			this.structureSeparation = structureSeparation;
+			this.enableFloatingIsland = enableFloatingIsland;
+			this.FloatingIslandChance = FloatingIslandChance;
+			this.FloatingIslandHeight = FloatingIslandHeight;
         	this.worldDepth = worldDepth;
         	this.seaLevel = seaLevel;
         	this.lavaLevel = lavaLevel;
         }
         
         public Properties copy() {
-        	return new Properties(this.spawnType, this.worldHeight, this.worldDepth, this.seaLevel, this.lavaLevel);
+        	return new Properties(this.spawnType, this.worldHeight, 
+								  this.worldMinY, this.riverScale, this.structureSeparation,
+								  this.enableFloatingIsland, this.FloatingIslandChance,
+								  this.FloatingIslandHeight, this.worldDepth, this.seaLevel, this.lavaLevel);
         }
         
         @Deprecated
