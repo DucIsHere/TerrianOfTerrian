@@ -4,14 +4,24 @@ import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.noise.Noise;
 import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 
-public class FloatingIslandPopulator implements TerrainPopulator {
+public class FloatingIslandPopulator implements CellPopulator {
     private final Noise islandNoise;
+    private final float threshold;
     private final int minHeight;
+    private final float islandScale;
     private final boolean enabled;
 
-    public FloatingIslandPopulator(Noise islandNoise, int minHeight, boolean enabled) {
+    public FloatingIslandPopulator(
+            Noise islandNoise,
+            float threshold,
+            int minHeight,
+            float islandScale,
+            boolean enabled
+    ) {
         this.islandNoise = islandNoise;
+        this.threshold = threshold;
         this.minHeight = minHeight;
+        this.islandScale = islandScale;
         this.enabled = enabled;
     }
 
@@ -19,18 +29,28 @@ public class FloatingIslandPopulator implements TerrainPopulator {
     public void apply(Cell cell, float x, float z) {
         if (!enabled) return;
 
-        // Nếu height dưới ngưỡng → khỏi dựng đảo
-        if (cell.height < minHeight) return;
+        if (cell.height < minHeight) {
+            return;
+        }
 
-        // Noise dạng blob / dome
-        float n = islandNoise.getValue(x, z);
+        float n = islandNoise.compute(x, z, 0);
 
-        if (n > 0.55F) {
-            float islandHeight = NoiseUtil.map(n, 0.55F, 1.0F, minHeight + 10, minHeight + 80);
-            cell.height = Math.max(cell.height, islandHeight);
+        if (n <= threshold) {
+            return;
+        }
 
-            // optional mask nếu m muốn nó trông sloped
-            cell.slope = Math.min(cell.slope, 0.2F);
+        float elevation = (n - threshold) / (1.0F - threshold);
+        elevation = elevation * islandScale;
+
+        float islandHeight = minHeight + elevation;
+
+        if (islandHeight > cell.height) {
+            cell.height = islandHeight;
+
+            cell.terrain = null;
+
+            cell.erosion *= 0.5F;
+            cell.weirdness *= 0.4F;
         }
     }
 }
