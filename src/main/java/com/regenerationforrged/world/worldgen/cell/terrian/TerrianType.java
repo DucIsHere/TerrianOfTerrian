@@ -6,6 +6,8 @@ import java.util.function.Predicate;
 import java.util.function.Consumer;
 import java.util.List;
 
+import com.regenerationforrged.world.worldgen.cell.terrian.ITerrian;
+
 public class TerrainType {
     private static final Object LOCK = new Object();
     private static final List<Terrain> REGISTRY = new CopyOnWriteArrayList<>();
