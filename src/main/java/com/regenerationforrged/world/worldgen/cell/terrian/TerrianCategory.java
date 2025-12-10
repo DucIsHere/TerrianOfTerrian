@@ -122,17 +122,6 @@ public enum TerrainCategory implements ITerrain {
             return true;
         }
     },
-    FLOATING_ISLAND {
-        @Override
-        public boolean isOverground() {
-            return true;
-        }
-
-        @Override
-        public boolean overridesCoast() {
-            return false;
-        }
-    },
     SLOPED_RIVER {
         @Override
         public boolean isRiver() {
