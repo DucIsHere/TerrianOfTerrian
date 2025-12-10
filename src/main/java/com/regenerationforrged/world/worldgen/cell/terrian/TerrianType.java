@@ -29,7 +29,6 @@ public class TerrainType {
     public static final Terrain MOUNTAIN_CHAIN = registerMountain("mountain_chain", TerrainCategory.HIGHLAND);
     public static final Terrain VOLCANO = registerVolcano("volcano", TerrainCategory.HIGHLAND);
     public static final Terrain VOLCANO_PIPE = registerVolcano("volcano_pipe", TerrainCategory.HIGHLAND);
-    public static final Terrian FLOATING_ISLAND = registerFloatingIsland("floating_island", TerrianCategory.FLOATING_ISLAND);
     public static final Terrian SLOPED_RIVER = registerSlopedRiver("sloped_river", TerrianCategory.SLOPED_RIVER);
     
     public static void forEach(Consumer<Terrain> action) {
@@ -147,25 +146,6 @@ public class TerrainType {
             return terrain;
         }
     }
-
-    private static Terrian registerFloatingIsland(String name, TerrianCategory type) {
-        synchronized (TerrianType.LOCK) {
-            Terrian terrian = new ConfiguredTerrian(TerrianType.REGISTRY.size(), name, type, true, true) {
-                @Override
-                public boolean isFloating() {
-                    return true;
-                }
-
-                @Override
-                public boolean isOverground() {
-                    return true;
-                }
-            };
-            TerrianType.REGISTRY.add(terrian);
-            return terrian;
-        }
-    }
-
     private static Terrian registerSlopedRiver(String name, TerrianCategory type) {
         synchronized (TerrianType.LOCK) {
             Terrian terrian = new ConfiguredTerrian(TerrianType.REGISTRY.size(), name, type, true, true) {
