@@ -120,9 +120,6 @@ public class WorldSettings {
 			Codec.INT.fieldOf("worldMinY").forGetter((o) -> o.worldMinY),
 			Codec.FLOAT.fieldOf("riverScale").forGetter((o) -> o.riverScale),
 			Codec.INT.fieldOf("structureSeparation").forGetter((o) -> o.structureSepararion),
-			Codec.BOOL.fieldOf("enableFloatingIsland").forGetter((o) -> o.enableFloatingIsland),
-			Codec.FLOAT.optinalFieldOf("FloatingIslandChance" 0.02F).forGetter((o) -> o.FloatingIslandChance),
-			Codec.INT.optionalFieldOf("FloatingIslandHeight", 256).forGetter((o) -> o.FloatingIslandHeight),
     		Codec.INT.optionalFieldOf("worldDepth", -64).forGetter((o) -> o.worldDepth),
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel),
     		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel)
@@ -133,25 +130,18 @@ public class WorldSettings {
 		public int worldMinY;
 		public float riverScale;
 		public int structureSeparation;
-		public boolean enableFloatingIsland;
-		public float FloatingIslandChance;
-		public int FloatingIslandHeight;
         public int worldDepth;
         public int seaLevel;
         public int lavaLevel;
         
         public Properties(SpawnType spawnType, int worldHeight,
 						  int worldMinY, float riverScale, int structureSeparation,
-						  boolean enableFloatingIsland, float FloatingIslandChance,
-						  int FloatingIslandHeight, int worldDepth, int seaLevel, int lavaLevel) {
+                        int worldDepth, int seaLevel, int lavaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
 			this.worldMinY = worldMinY;
 			this.riverScale = riverScale;
 			this.structureSeparation = structureSeparation;
-			this.enableFloatingIsland = enableFloatingIsland;
-			this.FloatingIslandChance = FloatingIslandChance;
-			this.FloatingIslandHeight = FloatingIslandHeight;
         	this.worldDepth = worldDepth;
         	this.seaLevel = seaLevel;
         	this.lavaLevel = lavaLevel;
@@ -159,9 +149,7 @@ public class WorldSettings {
         
         public Properties copy() {
         	return new Properties(this.spawnType, this.worldHeight, 
-								  this.worldMinY, this.riverScale, this.structureSeparation,
-								  this.enableFloatingIsland, this.FloatingIslandChance,
-								  this.FloatingIslandHeight, this.worldDepth, this.seaLevel, this.lavaLevel);
+								  this.worldMinY, this.riverScale, this.structureSeparation, this.worldDepth, this.seaLevel, this.lavaLevel);
         }
         
         @Deprecated
