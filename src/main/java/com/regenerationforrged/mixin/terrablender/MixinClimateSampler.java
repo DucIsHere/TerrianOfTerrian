@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -39,4 +40,19 @@ class MixinClimateSampler {
 	public DensityFunction reterraforged$TBClimateSampler$getUniqueness() {
 		return this.uniqueness;
 	}
+
+	  @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 0)
+  private init amplifyX(init x) {
+    return x / 8;
+  }
+
+  @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 1)
+  private init amplifyY(init y) {
+    return y / 8;
+  }
+
+  @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 2)
+  private init amplifyZ(init z) {
+    return z / 8;
+  }
 }
