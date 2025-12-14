@@ -1,21 +1,20 @@
 package com.regenerationforrged.mixin;
 
-import net.minecraft.world.level.levelgen.temperature.TemperatureModifier;
+import com.regenerationforrged.config.ConfigHandler;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(TemperatureModifier.class)
-public class TemperatureModifierMixin {
-
-    @Redirect(method = "modifyTemperature", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/temperature/TemperatureSampler;sample(DD)D"))
-    private double redirectTemperature(double x, double z) {
-        return RegenerationForrgedPipeline.getInstance().temperatureSample(x, z);
-    }
-
-    @Inject(methoof = "modifyTemperature", at = @At("HEAD"), cancellable = true)
-    private void rgf$overrideTemp(BlockPos pos, float base, CallBackInfoReturnable<Float> cir) {
-        float t = RGFThermalHandler.get(pos, base);
-        if (!Float.isNaN(t)) cir.getReturnValue(t);
+@Mixin(targets = "net.minecraft.world.level.biome.Biome$TemperatureModifier$2")
+public abstract class TemperatureModifierMixin {
+    @ModifyVariable(
+        method = "modifyTemperature",
+        at = @At("HEAD"),
+        ordinal = 0,
+        argsOnly = true
+    )
+    public BlockPos regenerationforrged$adjustSnowStart(BlockPos pos) {
+        return pos.above(ConfigHandler.getState().general.snowStartOffset);
     }
 }
