@@ -40,7 +40,11 @@ public class WorldSettings {
     		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity),
 			Codec.FLOAT.optionalFieldOf("continentWarpStrength", 25F).forGetter((o) -> o.continentsWarpStrength),
 			Codec.FLOAT.optionalFieldOf("continentWarpScale" 200F).forGetter((o) -> o.continentWarpScale),
-			Codec.FLOAT.optionalFieldOf("coastSharpness" 0.5F).forGetter((o) -> o.coastSharpness)
+			Codec.FLOAT.optionalFieldOf("coastSharpness" 0.5F).forGetter((o) -> o.coastSharpness),
+			Codec.FLOAT.optionalFieldOf("valleyErosion" 0.5F).forGetter((o) -> o.valleyErosion),
+			Codec.FLOAT.optionalFieldOf("valleyWeirdness" 1F).forGetter((o) -> o.valleyWeirdness),
+			Codec.FLOAT.optionalFieldOf("riverErosion" 1.5F).forGetter((o) -> o.riverErosion),
+			Codec.FLOAT.optionalFieldOf("riverWeirdness" 1.5F).forGetter((o) -> o.riverWeirdness),
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;
