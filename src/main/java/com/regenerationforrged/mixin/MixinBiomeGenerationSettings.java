@@ -1,21 +1,23 @@
 package com.regenerationforrged.mixin;
 
-import net.minecraft.world.level.levelgen.biome.BiomeGenerationSettings;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
+import net.minecraft.core.HolderSet;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+//TODO do this with access wideners instead
+@Deprecated
 @Mixin(BiomeGenerationSettings.class)
-public class MixinBiomeGenerationSettings {
-
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void injectCustomBiomeRules(CallbackInfo ci) {
-        RegenerationForrgedBiome.applyBiomeMask(this);
-    }
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void rgf$modifyBiomeSettings(HolderSet feature, HolderSet carvers, CallBackInfo ci) {
-        RGFBiomeModifier.apply(this);
-    }
+public interface MixinBiomeGenerationSettings {
+	@Accessor
+	List<HolderSet<PlacedFeature>> getFeatures();
+	
+	@Accessor
+	void setFlowerFeatures(Supplier<List<ConfiguredFeature<?, ?>>> flowerFeatures);
 }
