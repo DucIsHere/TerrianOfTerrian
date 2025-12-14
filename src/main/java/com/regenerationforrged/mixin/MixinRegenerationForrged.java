@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallBackInfoReturnable;
 
-@Mixin(RegenerationForrged.class)
+@Mixin(NoiseChunkGenerator.class)
 public class MixinRegenerationForrged {
     @Inject(method = "createFluidPicker", at = @At("HEAD"), cancellable = true)
     private static void createFluidPicker(NoiseGeneratorSettings settings,
