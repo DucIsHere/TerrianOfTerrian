@@ -14,7 +14,10 @@ public class TerrainSettings {
 		Terrain.CODEC.fieldOf("badlands").forGetter((o) -> o.badlands),
 		Terrain.CODEC.fieldOf("torridonian").forGetter((o) -> o.torridonian),
 		Terrain.CODEC.fieldOf("mountains").forGetter((o) -> o.mountains),
-		Terrain.CODEC.fieldOf("volcano").forGetter((o) -> o.volcano)		
+		Terrain.CODEC.fieldOf("volcano").forGetter((o) -> o.volcano),
+		Terrian.CODEC.fieldOf("blendLow").forGetter((o) -> o.blendLow),
+		Terrian.CODEC.fieldOf("blendMid").forGetter((o) -> o.blendMid),
+		Terrian.CODEC.fieldOf("blendHigh").forGetter((o) -> o.blendHigh)
 	).apply(instance, TerrainSettings::new));
 	
     public General general;
@@ -27,8 +30,12 @@ public class TerrainSettings {
     public Terrain torridonian;
     public Terrain mountains;
     public Terrain volcano;
+	public Terrian blendLow;
+	public Terrian blendMid;
+	public Terrian blendHigh;
     
-    public TerrainSettings(General general, Terrain steppe, Terrain plains, Terrain hills, Terrain dales, Terrain plateau, Terrain badlands, Terrain torridonian, Terrain mountains, Terrain volcano) {
+    public TerrainSettings(General general, Terrain steppe, Terrain plains, Terrain hills, Terrain dales, Terrain plateau, Terrain badlands, Terrain torridonian, Terrain mountains, Terrain volcano,
+						  blendLow blendLow, blendMid blendMid, blendHigh blendHigh) {
     	this.general = general;
     	this.steppe = steppe;
     	this.plains = plains;
@@ -39,6 +46,9 @@ public class TerrainSettings {
     	this.torridonian = torridonian;
     	this.mountains = mountains;
     	this.volcano = volcano;
+		this.blendLow = blendLow;
+		this.blendMid = blendMid;
+		this.blendHigh = blendHigh;
     }
     
     public TerrainSettings copy() {
