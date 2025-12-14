@@ -87,6 +87,7 @@ public class TerrainSettings {
         Codec.FLOAT.fieldOf("valleyDepth").forGetter(o -> o.valleyDepth),
         Codec.FLOAT.fieldOf("valleyWidth").forGetter(o -> o.valleyWidth),
         Codec.FLOAT.fieldOf("mountainSharpness").forGetter(o -> o.mountainSharpness),
+		Codec.FLOAT.fieldOf("mountainHeightScale").forGetter(o -> o.mountainHeightScale),
         Codec.FLOAT.fieldOf("mountainScale").forGetter(o -> o.mountainScale),
         Codec.FLOAT.fieldOf("plateauHeight").forGetter(o -> o.plateauHeight),
         Codec.INT.fieldOf("aquiferDepthOffset").forGetter(o -> o.aquiferDepthOffset)
