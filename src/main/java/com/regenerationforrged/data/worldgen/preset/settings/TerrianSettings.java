@@ -104,6 +104,7 @@ public class TerrainSettings {
     public float valleyDepth;
     public float valleyWidth;
     public float mountainSharpness;
+	public float mountainHeightScale;
     public float mountainScale;
     public float plateauHeight;
     public int aquiferDepthOffset;
@@ -111,14 +112,13 @@ public class TerrainSettings {
     public Terrain(
             float weight, float baseScale, float verticalScale, float horizontalScale,
             float baseHeight, int continentScale, float continentJitter, float slopeScale,
-            float valleyDepth, float valleyWidth, float mountainSharpness, float mountainScale,
+            float valleyDepth, float valleyWidth, float mountainSharpness, float mountainHeightScale, float mountainScale,
             float plateauHeight, int aquiferDepthOffset
     ) {
         this.weight = weight;
         this.baseScale = baseScale;
         this.verticalScale = verticalScale;
         this.horizontalScale = horizontalScale;
-
         this.baseHeight = baseHeight;
         this.continentScale = continentScale;
         this.continentJitter = continentJitter;
@@ -126,6 +126,7 @@ public class TerrainSettings {
         this.valleyDepth = valleyDepth;
         this.valleyWidth = valleyWidth;
         this.mountainSharpness = mountainSharpness;
+		this.mountainHeightScale = mountainHeightScale;
         this.mountainScale = mountainScale;
         this.plateauHeight = plateauHeight;
         this.aquiferDepthOffset = aquiferDepthOffset;
@@ -135,7 +136,7 @@ public class TerrainSettings {
         return new Terrain(
             weight, baseScale, verticalScale, horizontalScale,
             baseHeight, continentScale, continentJitter, slopeScale,
-            valleyDepth, valleyWidth, mountainSharpness, mountainScale,
+            valleyDepth, valleyWidth, mountainSharpness, mountainHeightScale, mountainScale,
             plateauHeight, aquiferDepthOffset
         );
     }
