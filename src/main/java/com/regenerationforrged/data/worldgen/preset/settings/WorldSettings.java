@@ -45,6 +45,7 @@ public class WorldSettings {
 			Codec.FLOAT.optionalFieldOf("valleyWeirdness" 1F).forGetter((o) -> o.valleyWeirdness),
 			Codec.FLOAT.optionalFieldOf("riverErosion" 1.5F).forGetter((o) -> o.riverErosion),
 			Codec.FLOAT.optionalFieldOf("riverWeirdness" 1.5F).forGetter((o) -> o.riverWeirdness),
+			Codec.FLOAT.optionalFieldOf("lakeWeirdNess" 0.5F).forGetter((o) -> o.lakeWeirdness),
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;
