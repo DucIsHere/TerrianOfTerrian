@@ -1,37 +1,37 @@
-package com.regenerationgorrged.world.worldgen.cell.heightmap;
+package com.regenerationforrged.world.worldgen.cell.heightmap;
 
 import net.minecraft.core.HolderGetter;
 
-import com.regenerationgorrged.data.worldgen.preset.PresetNoiseData;
-import com.regenerationgorrged.data.worldgen.preset.PresetTerrainTypeNoise;
-import com.regenerationgorrged.data.worldgen.preset.settings.Preset;
-import com.regenerationgorrged.data.worldgen.preset.settings.TerrainSettings;
-import com.regenerationgorrged.data.worldgen.preset.settings.WorldSettings;
+import com.regenerationforrged.data.worldgen.preset.PresetNoiseData;
+import com.regenerationforrged.data.worldgen.preset.PresetTerrainTypeNoise;
+import com.regenerationforrged.data.worldgen.preset.settings.Preset;
+import com.regenerationforrged.data.worldgen.preset.settings.TerrainSettings;
+import com.regenerationforrged.data.worldgen.preset.settings.WorldSettings;
 
-import com.regenerationgorrged.world.worldgen.GeneratorContext;
-import com.regenerationgorrged.world.worldgen.biome.Erosion;
-import com.regenerationgorrged.world.worldgen.biome.Weirdness;
-import com.regenerationgorrged.world.worldgen.cell.Cell;
-import com.regenerationgorrged.world.worldgen.cell.CellPopulator;
-import com.regenerationgorrged.world.worldgen.cell.climate.Climate;
-import com.regenerationgorrged.world.worldgen.cell.continent.Continent;
-import com.regenerationgorrged.world.worldgen.cell.continent.ContinentLerper2;
-import com.regenerationgorrged.world.worldgen.cell.continent.ContinentLerper3;
-import com.regenerationgorrged.world.worldgen.cell.rivermap.Rivermap;
-import com.regenerationgorrged.world.worldgen.cell.terrain.Blender;
-import com.regenerationgorrged.world.worldgen.cell.terrain.Populators;
-import com.regenerationgorrged.world.worldgen.cell.terrain.TerrainType;
-import com.regenerationgorrged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
-import com.regenerationgorrged.world.worldgen.cell.terrain.provider.TerrainProvider;
-import com.regenerationgorrged.world.worldgen.cell.terrain.region.RegionLerper;
-import com.regenerationgorrged.world.worldgen.cell.terrain.region.RegionModule;
-import com.regenerationgorrged.world.worldgen.cell.terrain.region.RegionSelector;
-import com.regenerationgorrged.world.worldgen.noise.function.DistanceFunction;
-import com.regenerationgorrged.world.worldgen.noise.function.EdgeFunction;
-import com.regenerationgorrged.world.worldgen.noise.function.Interpolation;
-import com.regenerationgorrged.world.worldgen.noise.module.Noise;
-import com.regenerationgorrged.world.worldgen.noise.module.Noises;
-import com.regenerationgorrged.world.worldgen.util.Seed;
+import com.regenerationforrged.world.worldgen.GeneratorContext;
+import com.regenerationforrged.world.worldgen.biome.Erosion;
+import com.regenerationforrged.world.worldgen.biome.Weirdness;
+import com.regenerationforrged.world.worldgen.cell.Cell;
+import com.regenerationforrged.world.worldgen.cell.CellPopulator;
+import com.regenerationforrged.world.worldgen.cell.climate.Climate;
+import com.regenerationforrged.world.worldgen.cell.continent.Continent;
+import com.regenerationforrged.world.worldgen.cell.continent.ContinentLerper2;
+import com.regenerationforrged.world.worldgen.cell.continent.ContinentLerper3;
+import com.regenerationforrged.world.worldgen.cell.rivermap.Rivermap;
+import com.regenerationforrged.world.worldgen.cell.terrain.Blender;
+import com.regenerationforrged.world.worldgen.cell.terrain.Populators;
+import com.regenerationforrged.world.worldgen.cell.terrain.TerrainType;
+import com.regenerationforrged.world.worldgen.cell.terrain.populator.VolcanoPopulator;
+import com.regenerationforrged.world.worldgen.cell.terrain.provider.TerrainProvider;
+import com.regenerationforrged.world.worldgen.cell.terrain.region.RegionLerper;
+import com.regenerationforrged.world.worldgen.cell.terrain.region.RegionModule;
+import com.regenerationforrged.world.worldgen.cell.terrain.region.RegionSelector;
+import com.regenerationforrged.world.worldgen.noise.function.DistanceFunction;
+import com.regenerationforrged.world.worldgen.noise.function.EdgeFunction;
+import com.regenerationforrged.world.worldgen.noise.function.Interpolation;
+import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.world.worldgen.noise.module.Noises;
+import com.regenerationforrged.world.worldgen.util.Seed;
 
 public record Heightmap(
         CellPopulator terrain,
@@ -120,6 +120,18 @@ public record Heightmap(
         ControlPoints controlPoints = ControlPoints.make(world.controlPoints);
         Levels levels = context.levels;
 
+        Seed regionWarp = context.seed.offset(8934);
+
+        RegionConfig regionConfig = new RegionConfig(
+                context.seed.root(),
+                general.terrainRegionSize,
+                Noises.simplex(regionWarp.next(), world.warpScale(), 1),
+                Noises.simplex(regionWarp.next(), world.warpScale(), 1),
+                world.warpStrength()
+        );
+
+        CellPopulator region = new RegionModule(regionConfig);
+        
         /* ---------- REGION ---------- */
 
         Seed regionWarp = context.seed.offset(8934);
