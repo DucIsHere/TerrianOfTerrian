@@ -14,6 +14,11 @@ public class RGFInit implements ModInitializer {
 
 	@Override
     public void onInitialize() {
+		RGFBuiltInRegistries.bootstrap();
+		TemplatePlacement.bootstrap();
+		TemplateDecorators.bootstrap();
+		RGFChanceModifiers.bootstrap();
+		RGFPlacementModifiers.bootstrap();
 
         LOGGER.info("Hello Fabric world!");
     }
