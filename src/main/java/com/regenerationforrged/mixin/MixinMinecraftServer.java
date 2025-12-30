@@ -38,4 +38,18 @@ class MixinMinecraftServer {
 //			}
 		});
     }
+
+	@Inject(at = @At("HEAD"), method = "setInitialSpawn")
+    private void detectEngineMode(ServerLevel serverLevel, ServerLevelData data, boolean bl, boolean bl2, CallbackInfo ci) {
+        // Kiểm tra xem Preset đang dùng là gì
+        serverLevel.registryAccess().lookup(RTFRegistries.PRESET).flatMap(r -> r.get(Preset.KEY)).ifPresent(preset -> {
+            // Giả sử bạn định nghĩa trong Preset của mình một flag để phân biệt
+            // Nếu là Preset dành cho JSON:
+            // EngineState.currentType = EngineState.Type.JSON;
+            // EngineState.isAmpOn = (tùy chỉnh của user);
+            
+            // Nếu là Preset mặc định/Java:
+            // EngineState.currentType = EngineState.Type.JAVA;
+        });
+    }
 }
