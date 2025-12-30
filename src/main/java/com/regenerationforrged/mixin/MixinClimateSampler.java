@@ -10,16 +10,16 @@ public class MixinClimateSampler {
 
   @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 0)
   private init amplifyX(init x) {
-    return x / 8;
+    return x * 8;
   }
 
   @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 1)
   private init amplifyY(init y) {
-    return y / 8;
+    return y * 8;
   }
 
   @ModifyVariable(method = "sample(III)Lnet/minecraft/world/gen/Climate$TargetPoint", at = @At("HEAD"), ordinal = 2)
   private init amplifyZ(init z) {
-    return z / 8;
+    return z * 8;
   }
 }
