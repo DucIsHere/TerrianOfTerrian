@@ -34,8 +34,8 @@ public class MixinChunkMap {
 		method = "<init>"
 	)
 	public void ChunkMap(ServerLevel serverLevel, LevelStorageSource.LevelStorageAccess storageAccess, DataFixer dataFixer, StructureTemplateManager templateLoader, Executor executor, BlockableEventLoop<Runnable> eventLoop, LightChunkGetter lightChunkGetter, ChunkGenerator chunkGenerator, ChunkProgressListener chunkProgressListener, ChunkStatusUpdateListener chunkStatusListener, Supplier<DimensionDataStorage> dimensionStorage, int viewDistance, boolean syncChunkWrites, CallbackInfo callback) {
-		if((Object) this.randomState instanceof RTFRandomState rtfRandomState) {
-			rtfRandomState.initialize(serverLevel.registryAccess());
+		if((Object) this.randomState instanceof RGFRandomState rgfRandomState) {
+			rgfRandomState.initialize(serverLevel.registryAccess());
 		}
 	}
 }
