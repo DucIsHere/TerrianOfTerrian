@@ -9,11 +9,14 @@ import net.minecraft.world.level.biome.Climate;
 import com.regenerationforrged.world.worldgen.terrablender.TBTargetPoint;
 
 @Mixin(Climate.TargetPoint.class)
-@Implements(@Interface(iface = TBTargetPoint.class, prefix = "reterraforged$TBTargetPoint$"))
+@Implements(@Interface(iface = TBTargetPoint.class, prefix = "regenerationforrged$TBTargetPoint$"))
 class MixinTargetPoint {
 	private double uniqueness = Double.NaN;
 	
 	public void regenerationforrged$TBTargetPoint$setUniqueness(double uniqueness) {
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+			return;
+		}
 		this.uniqueness = uniqueness;
 	}
 	
