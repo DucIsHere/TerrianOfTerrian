@@ -67,6 +67,11 @@ class MixinRandomState {
 		require = 1
 	)
 	private NoiseRouter RandomState(NoiseRouter router, DensityFunction.Visitor visitor, NoiseGeneratorSettings noiseGeneratorSettings, HolderGetter<NormalNoise.NoiseParameters> params, final long seed) {
+
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+        return; // Thoát ra để Minecraft tự chạy logic mặc định
+		}
+		
 		this.seed = seed;
 		this.densityFunctionWrapper = new DensityFunction.Visitor() {
 			
@@ -90,7 +95,7 @@ class MixinRandomState {
 		return router.mapAll(this.densityFunctionWrapper);
 	}
 
-	public void reterraforged$RTFRandomState$initialize(RegistryAccess registries) {
+	public void regenerationforrged$RGFRandomState$initialize(RegistryAccess registries) {
 		RegistryLookup<Preset> presets = registries.lookupOrThrow(RTFRegistries.PRESET);
 		RegistryLookup<Noise> noises = registries.lookupOrThrow(RTFRegistries.NOISE);
 		RegistryLookup<DensityFunction> functions = registries.lookupOrThrow(Registries.DENSITY_FUNCTION);
@@ -122,21 +127,21 @@ class MixinRandomState {
 	}
 	
 	@Nullable
-	public Preset reterraforged$RTFRandomState$preset() {
+	public Preset reforrgedforrged$RTFRandomState$preset() {
 		return this.preset;
 	}
 	
 	@Nullable
-	public GeneratorContext reterraforged$RTFRandomState$generatorContext() {
+	public GeneratorContext regenerationforrged$RGFRandomState$generatorContext() {
 		return this.generatorContext;
 	}
 
 	@Nullable
-	public DensityFunction reterraforged$RTFRandomState$wrap(DensityFunction function) {
+	public DensityFunction regenerationforrged$RGFRandomState$wrap(DensityFunction function) {
 		return function.mapAll(this.densityFunctionWrapper);
 	}
 
-	public Noise reterraforged$RTFRandomState$seed(Noise noise) {
+	public Noise regenerationforrged$RGFRandomState$seed(Noise noise) {
 		return Noises.shiftSeed(noise, (int) this.seed);
 	}
 }
