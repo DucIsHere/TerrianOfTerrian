@@ -23,6 +23,10 @@ public class MixinStructure {
 		cancellable = true
 	)
     private static void isValidBiome(GenerationStub generationStub, GenerationContext generationContext, CallbackInfoReturnable<Boolean> callback) {
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+        return; // Thoát ra để Minecraft tự chạy logic mặc định
+		}
+		
 		RegistryAccess registry = generationContext.registryAccess();
 		RegistryLookup<StructureRule> structureRules = registry.lookupOrThrow(RTFRegistries.STRUCTURE_RULE);
 		for(StructureRule structureRule : structureRules.listElements().map(Holder::value).toList()) {
