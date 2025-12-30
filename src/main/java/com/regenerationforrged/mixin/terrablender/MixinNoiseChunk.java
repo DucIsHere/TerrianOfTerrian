@@ -30,6 +30,9 @@ public class MixinNoiseChunk {
 		method = "<init>"
 	)
 	private void NoiseChunk(int cellCount, RandomState randomState, int x, int z, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifierOrMarker, NoiseGeneratorSettings noiseGeneratorSettings, Aquifer.FluidPicker fluidPicker, Blender blender, CallbackInfo callback) {
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+			return;
+		}
 		this.randomState = randomState;
 	}
 	
@@ -38,6 +41,10 @@ public class MixinNoiseChunk {
 		method = "cachedClimateSampler"
 	)
 	private void cachedClimateSampler(NoiseRouter noiseRouter, List<Climate.ParameterPoint> list, CallbackInfoReturnable<Climate.Sampler> callback) {
+
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+			return;
+		}
     	if((Object) callback.getReturnValue() instanceof TBClimateSampler cachedSampler && (Object) this.randomState.sampler() instanceof TBClimateSampler globalSampler) {
     		DensityFunction uniqueness = globalSampler.getUniqueness();
 
