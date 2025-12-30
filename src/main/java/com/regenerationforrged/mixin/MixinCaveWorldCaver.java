@@ -19,6 +19,11 @@ public class CaveWorldCarverMixin {
 
   @Redirect(method = "carve", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/noise/NoiseSampler;sample(DDD)D"))
     private double redirectCarveNoise(double x, double y, double z) {
-        return RegenerationForrgedPipeline.getInstance().warpSample(x, y, z);
+    // NẾU LÀ JSON, KHÔNG DÙNG WARP CỦA JAVA
+    if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+        // Bạn có thể phải gọi lại phương thức gốc ở đây hoặc dùng Inject HEAD để thoát sớm
+        return someVanillaSampler.sample(x, y, z); 
+    }
+    return RegenerationForrgedPipeline.getInstance().warpSample(x, y, z);
     }
 }
