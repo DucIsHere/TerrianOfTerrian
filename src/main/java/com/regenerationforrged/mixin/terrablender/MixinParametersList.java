@@ -27,6 +27,9 @@ class MixinParameterList<T> {
 		require = 1	
 	)
     public void initializeForTerraBlender(RegistryAccess registryAccess, RegionType regionType, long seed, CallbackInfo callback) {
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+			return;
+		}
     	this.maxIndex = Regions.getCount(regionType) - 1;
 //
 //    	registryAccess.lookup(RTFRegistries.PRESET).flatMap((registry) -> {
@@ -48,6 +51,9 @@ class MixinParameterList<T> {
 		require = 0	
 	)
     public int getUniqueness(Climate.ParameterList<T> parameterList, int x, int y, int z, Climate.TargetPoint targetPoint) {
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+			return;
+		}
 		if((Object) targetPoint instanceof TBTargetPoint tbTargetPoint) {
 			double uniqueness = tbTargetPoint.getUniqueness();
 			if(Double.isNaN(uniqueness)) {
