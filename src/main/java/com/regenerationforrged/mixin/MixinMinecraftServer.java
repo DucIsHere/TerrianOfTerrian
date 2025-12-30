@@ -16,39 +16,16 @@ import com.regenerationforrged.registries.RTFRegistries;
 @Mixin(MinecraftServer.class)
 class MixinMinecraftServer {
 
-	@Inject(
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/world/level/biome/Climate$Sampler;findSpawnPosition()Lnet/minecraft/core/BlockPos;"
-		),
-		method = "setInitialSpawn"
-	)
-    private static void findSpawnPosition(ServerLevel serverLevel, ServerLevelData serverLevelData, boolean bl, boolean bl2, CallbackInfo callback) {
-		RandomState randomState = serverLevel.getChunkSource().randomState();
-		Climate.Sampler sampler = randomState.sampler();
-		serverLevel.registryAccess().lookup(RTFRegistries.PRESET).flatMap((registry) -> {
-			return registry.get(Preset.KEY);
-		}).ifPresent((preset) -> {
-//			if((Object) randomState instanceof RTFRandomState rtfRandomState && (Object) sampler instanceof RTFClimateSampler rtfClimateSampler) {
-//				BlockPos searchCenter = preset.value().world().properties.spawnType.getSearchCenter(rtfRandomState.generatorContext());
-//				RTFCommon.LOGGER.info(searchCenter);
-////				rtfClimateSampler.setSpawnSearchCenter(searchCenter);
-//			} else {
-//				throw new IllegalStateException();
-//			}
-		});
-    }
-
-	// Trong MixinMinecraftServer.java
-@Inject(at = @At("HEAD"), method = "setInitialSpawn")
-private void detectEngineMode(ServerLevel serverLevel, ServerLevelData data, boolean bl, boolean bl2, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "setInitialSpawn")
+    private static void findSpawnPosition(ServerLevel serverLevel, ...) {
     serverLevel.registryAccess().lookup(RTFRegistries.PRESET).flatMap(r -> r.get(Preset.KEY)).ifPresent(preset -> {
-        // Logic kiểm tra: Nếu preset thuộc folder JSON của bạn
-        if (preset.key().location().getPath().contains("json_gen")) {
+        // Kiểm tra ID của Preset để chốt Mode
+        if (preset.key().location().getPath().contains("json_style")) {
             EngineState.currentType = EngineState.Type.JSON;
-            EngineState.isAmpOn = true; // Bật amp noise cho JSON
+            EngineState.isAmpOn = true;
         } else {
             EngineState.currentType = EngineState.Type.JAVA;
+            EngineState.isAmpOn = false;
         }
     });
 }
