@@ -23,7 +23,7 @@ import com.regenerationforrged.world.worldgen.surface.RTFSurfaceSystem;
 import com.regenerationforrged.world.worldgen.surface.rule.StrataRule;
 
 @Mixin(SurfaceSystem.class)
-@Implements(@Interface(iface = RTFSurfaceSystem.class, prefix = RTFCommon.MOD_ID + "$RTFSurfaceSystem$"))
+@Implements(@Interface(iface = RTFSurfaceSystem.class, prefix = RGFInit.MOD_ID + "$RGFSurfaceSystem$"))
 class MixinSurfaceSystem {
 	private static final ResourceLocation GEOLOGY_RANDOM = RTFCommon.location("geology");
 	private RandomState randomState;
@@ -34,6 +34,11 @@ class MixinSurfaceSystem {
 		method = "<init>"
 	)
     public void SurfaceSystem(RandomState randomState, BlockState blockState, int i, PositionalRandomFactory positionalRandomFactory, CallbackInfo callback) {
+
+		if (com.regenerationforrged.engine.EngineState.currentType == com.regenerationforrged.engine.EngineState.Type.JSON) {
+        return; // Thoát ra để Minecraft tự chạy logic mặc định
+		}
+		
     	this.randomState = randomState;
     	this.strata = new ConcurrentHashMap<>();
 	}
