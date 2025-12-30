@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallBackInfo;
 public class MixinNoiseParameters {
 
   @Inject(method = "<init>", at = @At("RETURN"))
-  private void jjAmp(init firstOctave, List<Double> amplitudes, CallBackInfo ci) {
+  if private void jjAmp(init firstOctave, List<Double> amplitudes, CallBackInfo ci) {
 
     if(amplitudes == null || amplitudes.isEmpty())
       return;
