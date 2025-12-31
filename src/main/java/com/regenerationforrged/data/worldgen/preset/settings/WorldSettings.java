@@ -147,7 +147,8 @@ public class WorldSettings {
 			Codec.INT.fieldOf("structureSeparation").forGetter((o) -> o.structureSepararion),
     		Codec.INT.optionalFieldOf("worldDepth", -64).forGetter((o) -> o.worldDepth),
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel),
-    		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel)
+    		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel),
+			Codec.BOOL.optionalFieldOf("JavaEngineWorld", true).forGetter((o) -> o.JavaEngineWorld)
     	).apply(instance, Properties::new));
     	
         public SpawnType spawnType;
@@ -158,10 +159,11 @@ public class WorldSettings {
         public int worldDepth;
         public int seaLevel;
         public int lavaLevel;
+		public boolean JavaEngineWorld;
         
         public Properties(SpawnType spawnType, int worldHeight,
 						  int worldMinY, float riverScale, int structureSeparation,
-                        int worldDepth, int seaLevel, int lavaLevel) {
+                        int worldDepth, int seaLevel, int lavaLevel, bool JavaEngineWorld) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
 			this.worldMinY = worldMinY;
@@ -170,11 +172,12 @@ public class WorldSettings {
         	this.worldDepth = worldDepth;
         	this.seaLevel = seaLevel;
         	this.lavaLevel = lavaLevel;
+			this.JavaEngineWorld = JavaEngineWorld;
         }
         
         public Properties copy() {
         	return new Properties(this.spawnType, this.worldHeight, 
-								  this.worldMinY, this.riverScale, this.structureSeparation, this.worldDepth, this.seaLevel, this.lavaLevel);
+								  this.worldMinY, this.riverScale, this.structureSeparation, this.worldDepth, this.seaLevel, this.lavaLevel, this.JavaEngineWorld);
         }
         
         @Deprecated
