@@ -11,22 +11,23 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.storage.ServerLevelData;
 import com.regenerationforrged.data.worldgen.preset.settings.Preset;
-import com.regenerationforrged.registries.RTFRegistries;
+import com.regenerationforrged.registries.RGFRegistries;
 
 @Mixin(MinecraftServer.class)
 class MixinMinecraftServer {
 
 	@Inject(at = @At("HEAD"), method = "setInitialSpawn")
     private static void findSpawnPosition(ServerLevel serverLevel, ...) {
-    serverLevel.registryAccess().lookup(RTFRegistries.PRESET).flatMap(r -> r.get(Preset.KEY)).ifPresent(preset -> {
+    serverLevel.registryAccess().lookup(RGFRegistries.PRESET).flatMap(r -> r.get(Preset.KEY)).ifPresent(preset -> {
+		boolean isJava = preset.value().world().properties.isJavaEngine;
         // Kiểm tra ID của Preset để chốt Mode
-        if (preset.key().location().getPath().contains("json_style")) {
-            EngineState.currentType = EngineState.Type.JSON;
-            EngineState.isAmpOn = true;
-        } else {
-            EngineState.currentType = EngineState.Type.JAVA;
-            EngineState.isAmpOn = false;
-        }
+        if (isJava) {
+        com.regenerationforrged.engine.EngineState.currentType = Type.JAVA;
+        // Cho phép hệ thống load TerrainSettings, RiverSettings...
+		} else {
+        com.regenerationforrged.engine.EngineState.currentType = Type.JSON;
+        // Dòng này sẽ kích hoạt "lệnh ngắt" return trong 17+ Mixins của bạn
+		}
     });
 }
 }
