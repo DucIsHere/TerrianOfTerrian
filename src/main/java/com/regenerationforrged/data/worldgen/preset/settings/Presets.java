@@ -275,4 +275,15 @@ public class Presets {
 	public static Preset makeLegacy1_18() {
 		throw new UnsupportedOperationException("TODO");
 	}
+
+	public static final Preset JSON_LITE = new Preset (
+		new WorldSettings(
+			continent,
+			controlPoints,
+			new Properties(SpawnType.CONTINENT_CENTER, 320, -64, 0, 0, 0, 63, -54, false) // false ở cuối là isJavaEngine
+		),
+		null,
+		null,
+		null
+	)
 }
