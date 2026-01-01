@@ -41,6 +41,7 @@ public class Cell {
     public BiomeType biome;
     public float erosion;
     public float weirdness;
+    public float sharpness;
     public float temperature;
     public float moisture;
     
@@ -79,6 +80,7 @@ public class Cell {
         this.biome = other.biome;
         this.erosion = other.erosion;
         this.weirdness = other.weirdness;
+        this.sharpness = other.sharpness;
         this.temperature = other.temperature;
         this.moisture = other.moisture;
         this.beachNoise = other.beachNoise;
