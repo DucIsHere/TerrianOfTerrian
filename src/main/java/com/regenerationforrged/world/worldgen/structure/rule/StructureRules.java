@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 
 import com.regenerationforrged.platform.RegistryUtil;
-import com.regenerationforrged.registries.RTFBuiltInRegistries;
+import com.regenerationforrged.registries.RGFBuiltInRegistries;
 import com.regenerationforrged.world.worldgen.cell.terrain.Terrain;
 
 public class StructureRules {
@@ -18,6 +18,6 @@ public class StructureRules {
 	}
 
 	private static void register(String name, Codec<? extends StructureRule> value) {
-		RegistryUtil.register(RTFBuiltInRegistries.STRUCTURE_RULE_TYPE, name, value);
+		RegistryUtil.register(RGFBuiltInRegistries.STRUCTURE_RULE_TYPE, name, value);
 	}
 }
