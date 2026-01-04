@@ -1,4 +1,4 @@
-# Regeneration Forrged
+# Regeneration Forged
 Regeneration Forrged is a high-performance Minecraft World Generation mod designed with a unique Dual-Engine architecture. It allows creators to toggle between complex, procedurally generated Java logic and optimized, data-driven JSON density functions.
 
 # 🚀 Key Features
