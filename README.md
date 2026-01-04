@@ -40,3 +40,6 @@ if (EngineState.currentType == EngineState.Type.JSON) return;
 Configuring Amp Noise
 
 For **JSON** presets, you can adjust the terrain scale in MixinNoiseParameters. It targets ImmutableCollections to ensure it only modifies data-driven noise, leaving internal vanilla constants untouched.
+
+
+***successor***
