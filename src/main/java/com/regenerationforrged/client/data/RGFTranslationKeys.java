@@ -1,8 +1,8 @@
 package com.regenerationforrged.client.data;
 
-import com.regenerationforrged.RegenerationForrged;
+import com.regenerationforrged.RGFInit;
 
-public final class RTFTranslationKeys {
+public final class RGFTranslationKeys {
 	public static final String METADATA_DESCRIPTION = resolve("metadata.description");
 	public static final String PRESET_METADATA_DESCRIPTION = resolve("preset.metadata.description");
 	public static final String MUD_SWAMPS_METADATA_DESCRIPTION = resolve("mudSwamps.metadata.description");
@@ -66,7 +66,7 @@ public final class RTFTranslationKeys {
 	public static final String GUI_SLIDER_CONTINENT_SIZE_VARIANCE = resolve("gui.slider.continentSizeVariance");
 	public static final String GUI_SLIDER_CONTINENT_NOISE_OCTAVES = resolve("gui.slider.continentNoiseOctaves");
 	public static final String GUI_SLIDER_CONTINENT_NOISE_GAIN = resolve("gui.slider.continentNoiseGain");
-	public static final String GUI_SLIDER_CONTINENT_NOISE_LACUNARITY = resolve("gui.slider.continentNoisLacunarity");
+	public static final String GUI_SLIDER_CONTINENT_NOISE_LACUNARITY = resolve("gui.slider.continentNoiseLacunarity");
 	public static final String GUI_SLIDER_MUSHROOM_FIELDS_INLAND = resolve("gui.slider.mushroomFieldsInland");
 	public static final String GUI_SLIDER_MUSHROOM_FIELDS_COAST = resolve("gui.slider.mushroomFieldsCoast");
 	public static final String GUI_SLIDER_DEEP_OCEAN = resolve("gui.slider.deepOcean");
@@ -175,6 +175,6 @@ public final class RTFTranslationKeys {
 	public static final String GUI_LABEL_SMOOTHING = resolve("gui.label.smoothing");
 	
 	private static String resolve(String key) {
-		return RTFCommon.MOD_ID + "." + key;
+		return RGFInit.MOD_ID + "." + key;
 	}
 }
