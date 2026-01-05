@@ -60,6 +60,7 @@ public final class RGFTranslationKeys {
 	public static final String GUI_BUTTON_VANILLA_LAVA_SPRINGS = resolve("gui.button.vanillaLavaSprings");
 	
 	public static final String GUI_SLIDER_ZOOM = resolve("gui.slider.zoom");
+	public static final String GUI_SLIDER_SHARPNESS = resolve("gui.slider.sharpness");
 	public static final String GUI_SLIDER_CONTINENT_SCALE = resolve("gui.slider.continentScale");
 	public static final String GUI_SLIDER_CONTINENT_JITTER = resolve("gui.slider.continentJitter");
 	public static final String GUI_SLIDER_CONTINENT_SKIPPING = resolve("gui.slider.continentSkipping");
