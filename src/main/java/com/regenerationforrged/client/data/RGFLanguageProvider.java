@@ -72,6 +72,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Vanilla Lava Lakes")
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Vanilla Lava Springs");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Zoom");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "Sharness");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Continent Scale");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Continent Jitter");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Continent Skipping");
@@ -217,6 +218,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltios.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrain.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -387,6 +389,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Nguồn dung nham 
 
 // --- Cài đặt Lục địa & Nhiễu (Noise) ---
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Độ Thu Phóng");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "Độ Sắc Bén")
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Quy Mô Lục Địa");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Độ Mấp Mô Lục Địa");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Độ Đứt Gãy Lục Địa");
@@ -548,6 +551,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrain.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -719,6 +723,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "原版岩浆泉");
 
 // --- Sliders ---
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "缩放");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "锋利的");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "大陆规模");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "大陆抖动");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "大陆跳跃");
@@ -864,6 +869,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrain.")
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
