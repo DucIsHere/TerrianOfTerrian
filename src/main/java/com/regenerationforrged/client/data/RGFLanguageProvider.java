@@ -1038,6 +1038,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "バニラの溶岩�
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "バニラの溶岩流");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "ズーム");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "シャープネス"
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "大陸のスケール");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "大陸のジッター");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "大陸のスキップ");
@@ -1182,6 +1183,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of terrian");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -1351,6 +1353,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Ванильные �
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Ванильные лавовые источники");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Масштаб");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "острота"
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Масштаб континентов");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Дрожание континентов");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Пропуск континентов");
@@ -1495,6 +1498,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrian");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -1663,6 +1667,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Lagos de Lava Vanill
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Manantiales de Lava Vanilla");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Zoom");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "nitidez");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Escala de Continente");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Inestabilidad de Continente");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Omisión de Continente");
@@ -1807,6 +1812,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrian");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -1975,6 +1981,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Lacs de lave Vanilla
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Sources de lave Vanilla");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Zoom");
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "acuité");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Échelle du continent");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Instabilité du continent");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Omission de continent");
@@ -2119,6 +2126,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrian");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
