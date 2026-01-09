@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class TerrainSettings {
+	public MountainRanges mountainRanges;
 	public static final Codec<TerrainSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		General.CODEC.fieldOf("general").forGetter((o) -> o.general),
 		Terrain.CODEC.fieldOf("steppe").forGetter((o) -> o.steppe),
@@ -17,7 +18,8 @@ public class TerrainSettings {
 		Terrain.CODEC.fieldOf("volcano").forGetter((o) -> o.volcano),
 		Terrian.CODEC.fieldOf("blendLow").forGetter((o) -> o.blendLow),
 		Terrian.CODEC.fieldOf("blendMid").forGetter((o) -> o.blendMid),
-		Terrian.CODEC.fieldOf("blendHigh").forGetter((o) -> o.blendHigh)
+		Terrian.CODEC.fieldOf("blendHigh").forGetter((o) -> o.blendHigh),
+		MountainRanges.CODEC.fieldOf("mountainranges").forGetter((o) -> o.moutainranges)
 	).apply(instance, TerrainSettings::new));
 	
     public General general;
@@ -33,9 +35,11 @@ public class TerrainSettings {
 	public Terrian blendLow;
 	public Terrian blendMid;
 	public Terrian blendHigh;
+	public MountainRanges mountainranges;
     
     public TerrainSettings(General general, Terrain steppe, Terrain plains, Terrain hills, Terrain dales, Terrain plateau, Terrain badlands, Terrain torridonian, Terrain mountains, Terrain volcano,
-						  blendLow blendLow, blendMid blendMid, blendHigh blendHigh) {
+						  blendLow blendLow, blendMid blendMid, blendHigh blendHigh,
+						  moutainranges mountainrange) {
     	this.general = general;
     	this.steppe = steppe;
     	this.plains = plains;
@@ -49,11 +53,51 @@ public class TerrainSettings {
 		this.blendLow = blendLow;
 		this.blendMid = blendMid;
 		this.blendHigh = blendHigh;
+		this.mountainranges = mountaintanges;
     }
     
     public TerrainSettings copy() {
-    	return new TerrainSettings(this.general.copy(), this.steppe.copy(), this.plains.copy(), this.hills.copy(), this.dales.copy(), this.plateau.copy(), this.badlands.copy(), this.torridonian.copy(), this.mountains.copy(), this.volcano.copy());
+    	return new TerrainSettings(this.general.copy(), this.steppe.copy(), this.plains.copy(), this.hills.copy(), this.dales.copy(), this.plateau.copy(), this.badlands.copy(), this.torridonian.copy(), this.mountains.copy(), this.volcano.copy(),
+								  this.mountainranges.copy());
     }
+
+	public static class MountainRanges {
+		public static final Codec<MountainRanges> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("density").forGetter((o) -> o.density),
+			Codec.STRING.fieldOf("sharpness").forGetter((o) -> o.sharpness),
+			Codec.FLOAT.fieldOf("rangeDensity").forGetter((o) -> o.rangeDensity),
+			Codec.INT.fieldOf("rangeScale").forGetter((o) -> o.rangeScale),
+			Codec.FLOAT.fieldOf("scale").forGetter((o) -> o.rangeScale),
+			Codec.INT.fieldOf("weight").forGetter((o) -> o.weight),
+			Codec.STRING.xmap(Sharpness::valueOf, Sharpness::name).fieldOf("sharpness").forGetter(o -> o.sharpness)
+		).apply(instance, MountainRanges::new));
+
+		public int density;
+		public string sharpness;
+		public float rangeDensity;
+		public int rangeScale;
+		public float scale;
+		public int weight;
+		public Sharpness sharpness;
+
+		public MoutainRanges(int density, string sharpness, float rangeDensity,
+							int rangeScale, float scale, int weight,
+							Sharpness sharpness) {
+			this.density = density;
+			this.sharpness = sharpness;
+			this.rangeDensity = rangeDensity;
+			this.rangeScale = rangeScale;
+			this.scale = scale;
+			this.weight = weight;
+			this.sharpness = sharpness;
+		}
+
+		public MountainRanges copy() {
+			return new MountainRanges(this.density.copy(), this.sharpness.copy(), this.rangeDensity.copy(),
+									 this.rangeScale.copy(), this.scale.copy(), this.weight.copy(),
+									 this.sharpness());
+		}
+	}
     
     public static class General {
     	public static final Codec<General> CODEC = RecordCodecBuilder.create(instance -> instance.group(
