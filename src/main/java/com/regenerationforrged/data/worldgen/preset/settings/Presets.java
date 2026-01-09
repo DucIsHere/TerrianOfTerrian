@@ -42,7 +42,8 @@ public class Presets {
 				new Terrain(1.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.0F, 1.0F, 1.0F, 1.0F), 
 				new Terrain(2.5F, 1.0F, 1.0F, 1.0F),
-				new Terrain(5.0F, 1.0F, 1.0F, 1.0F)
+				new Terrain(5.0F, 1.0F, 1.0F, 1.0F),
+				new MountainRanges(0.5F, 250, Sharpness.AVERAGE)
 		    ), 
 			new RiverSettings(
 				0, 8, 
