@@ -14,7 +14,7 @@ record Frequency(Noise input, Noise xFreq, Noise zFreq) implements Noise {
 	public float compute(float x, float z, int seed) {
 		float xFreq = this.xFreq.compute(x, z, seed);
 		float zFreq = this.zFreq.compute(x, z, seed);
-		return this.input.compute(x * xFreq, z * zFreq, seed);
+		return this.input.compute(x * (xF * 0.25f), z * zFreq, seed);
 	}
 
 	@Override
