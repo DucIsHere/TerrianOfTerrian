@@ -6,24 +6,48 @@ import com.regenerationforrged.world.worldgen.cell.CellPopulator;
 import com.regenerationforrged.world.worldgen.cell.terrain.Terrain;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 
-public record TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float baseScale, float heightScale, float weight) implements CellPopulator, WeightedPopulator {
-    
-	public TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float weight) {
-		this(type, base, height, erosion, weirdness, 1.0F, 1.0F, weight);
-	}
-	
+/**
+ * TerrainPopulator - extended to accept an optional mountain Noise.
+ * Backwards compatible convenience constructors and factory methods are provided.
+ */
+public record TerrainPopulator(
+    Terrain type,
+    Noise base,
+    Noise height,
+    Noise erosion,
+    Noise weirdness,
+    float baseScale,
+    float heightScale,
+    float weight,
+    Noise mountain // optional, can be null
+) implements CellPopulator, WeightedPopulator {
+
+    // Backwards-compatible convenience constructor (keeps previous behavior)
+    public TerrainPopulator(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, float weight) {
+        this(type, base, height, erosion, weirdness, 1.0F, 1.0F, weight, null);
+    }
+
     @Override
     public void apply(Cell cell, float x, float z) {
-        float base = this.base.compute(x, z, 0) * this.baseScale;
-        float height = this.height.compute(x, z, 0) * this.heightScale;
+        float baseVal = this.base.compute(x, z, 0) * this.baseScale;
+        float heightVal = this.height.compute(x, z, 0) * this.heightScale;
+
+        // Sample mountain noise if provided
+        float mountainDelta = (this.mountain != null) ? this.mountain.compute(x, z, 0) : 0.0F;
 
         cell.terrain = this.type;
-        cell.height = Math.max(base + height, 0.0F);
+        cell.height = Math.max(baseVal + heightVal + mountainDelta, 0.0F);
         cell.erosion = this.erosion.compute(x, z, 0);
         cell.weirdness = this.weirdness.compute(x, z, 0);
     }
-    
+
+    // Existing factory kept for backwards compatibility (no mountains)
     public static TerrainPopulator make(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, TerrainSettings.Terrain settings) {
-    	return new TerrainPopulator(type, base, height, erosion, weirdness, settings.baseScale, settings.verticalScale, settings.weight);
+        return new TerrainPopulator(type, base, height, erosion, weirdness, settings.baseScale, settings.verticalScale, settings.weight, null);
+    }
+
+    // New factory that accepts an optional mountain Noise
+    public static TerrainPopulator make(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, TerrainSettings.Terrain settings, Noise mountain) {
+        return new TerrainPopulator(type, base, height, erosion, weirdness, settings.baseScale, settings.verticalScale, settings.weight, mountain);
     }
 }
