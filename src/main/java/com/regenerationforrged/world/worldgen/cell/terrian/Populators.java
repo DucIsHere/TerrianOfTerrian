@@ -291,6 +291,9 @@ public class Populators {
 			2.5f
 		);
 
+		Noise finalHeight = Noises.mul(height, 0.7F * verticalScale);
+		return TerrainPopulator.make(terrainType, ground, finalHeight, Erosion.LEVEL_1.source(), Noises.min(Noises.mul(height, Noises.constant(-1.0F)), Noises.constant(-0.08F)), settings, mountain);
+
 		height = Noise.add(height, mountains);
 
 		Noise scaler = Noises.perlin(seed.next(), 24, 4);
