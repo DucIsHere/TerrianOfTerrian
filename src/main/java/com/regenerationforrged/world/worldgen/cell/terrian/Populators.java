@@ -1,5 +1,6 @@
 package com.regenerationforrged.world.worldgen.cell.terrain;
 
+import com.regenerationforrged.world.worldgen.cell.terrian;
 import com.regenerationforrged.data.worldgen.preset.settings.TerrainSettings;
 import com.regenerationforrged.world.worldgen.biome.Erosion;
 import com.regenerationforrged.world.worldgen.biome.Weirdness;
@@ -270,6 +271,27 @@ public class Populators {
 		int scaleH = Math.round(410.0F * settings.horizontalScale);
 
 		Noise height = Noises.perlinRidge(seed.next(), scaleH, 4, 2.35F, 1.15F);
+		// mountain noise setup (insert after 'height' is assembled)
+        Noise axisX = Noises.perlin(seed.next(), 600, 1);
+        axisX = Noises.warpPerlin(axisX, seed.next(), 800, 1, 200.0F); // optional warp to make axis curvy
+        Noise axisZ = Noises.perlin(seed.next(), 600, 1);
+        axisZ = Noises.warpPerlin(axisZ, seed.next(), 800, 1, 200.0F);
+
+        Noise ridge = Noises.perlin(seed.next(), 40, 3);
+        ridge = Noises.warpPerlin(ridge, seed.next(), 20, 1, 20.0F); // add detail
+
+		ParametricMountainRange mountain = new ParametricMountainRange (
+			axisX, axisZ, ridge,
+			1.0f / 512.0f,
+			0.2f,
+			300f,
+			200f,
+			0.006f,
+			80f,
+			2.5f
+		);
+
+		height = Noise.add(height, mountains);
 
 		Noise scaler = Noises.perlin(seed.next(), 24, 4);
 		scaler = Noises.alpha(scaler, 0.075F);
