@@ -67,9 +67,18 @@ public class Noises {
 		register("erosion", Erosion.CODEC);
 		register("linear_spline", LinearSpline.CODEC);
 		register("cache", Cache2d.CODEC);
+		register("sloped", Sloped.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
+	}
+
+	public static Noise sloped(Noise input, float exponent) {
+		return sloped(input, constant(exponent));
+	}
+
+	public static Noise sloped(Noise input, Noise expinent) {
+		return new Sloped(input, exponent);
 	}
 
 	public static Noise constant(float value) {
