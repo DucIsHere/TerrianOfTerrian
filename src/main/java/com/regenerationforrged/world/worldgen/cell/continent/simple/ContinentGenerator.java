@@ -32,6 +32,13 @@ public abstract class ContinentGenerator implements SimpleContinent {
     protected Domain warp;
     protected Noise shape;
     protected RiverCache cache;
+    protected final float skipChance;
+    protected final float variance;
+    protected final float warpScale;
+    protected final float warpStrength;
+    protected final float gain;
+    protected final float octaves;
+    protected final float lacunarity;
     
     public ContinentGenerator(Seed seed, GeneratorContext context) {
         WorldSettings settings = context.preset.world();
