@@ -42,6 +42,14 @@ public abstract class ContinentGenerator implements SimpleContinent {
     
     public ContinentGenerator(Seed seed, GeneratorContext context) {
         WorldSettings settings = context.preset.world();
+
+        int cScale = settings.continent.continentScale;
+        float cJitter = settings.continent.continentJitter;
+        float cSkipping = settings.continent.continentSkipping; // Slider skipping
+        float cVariance = settings.continent.sizeVariance;     // Slider variance
+        float cWarpStr = settings.continent.warpStrength;      // Slider warpStrength
+        float cWarpScale = settings.continent.warpScale;       // Slider warpScale
+        
         int tectonicScale = settings.continent.continentScale * 4;
         this.continentScale = settings.continent.continentScale / 2;
         this.seed = seed.next();
@@ -56,11 +64,21 @@ public abstract class ContinentGenerator implements SimpleContinent {
         Domain warp = Domains.domainPerlin(seed.next(), 20, 2, 20.0F);
         warp = Domains.compound(warp, Domains.domainSimplex(seed.next(), this.continentScale, 3, this.continentScale));
         this.warp = warp;
+        Domain extraWarp = Domains.domainPerlin(seed.next(), (int)cWarpScale, 2, cWarpStr);
+        this.warp = Domains.compound(warp, extraWarp);
         
         Noise shape = Noises.simplex(seed.next(), settings.continent.continentScale * 2, 1);
         shape = Noises.add(shape, 0.65F);
         shape = Noises.clamp(shape, 0.0F, 1.0F);
+        Noise detail = Noise.perlin(
+            seed.next(),
+            settings.continent.continentScale,
+            settings.continent.continentOctaves,
+            settings.continent.continentLacunarity,
+            settings.continent.continentGain
+        );
         this.shape = shape;
+        this.shape = Noises.clamp(Noises.add(shape, detail, 0.65F), 0.0F, 1.0F);
 
         this.cache = new LegacyRiverCache(new SimpleRiverGenerator(this, context));
     }
