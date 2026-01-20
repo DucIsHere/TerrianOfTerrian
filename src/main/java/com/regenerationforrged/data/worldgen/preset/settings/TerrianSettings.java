@@ -135,8 +135,6 @@ public class TerrainSettings {
         Codec.FLOAT.fieldOf("verticalScale").forGetter(o -> o.verticalScale),
         Codec.FLOAT.fieldOf("horizontalScale").forGetter(o -> o.horizontalScale),
         Codec.FLOAT.fieldOf("baseHeight").forGetter(o -> o.baseHeight),
-        Codec.INT.fieldOf("continentScale").forGetter(o -> o.continentScale),
-        Codec.FLOAT.fieldOf("continentJitter").forGetter(o -> o.continentJitter),
         Codec.FLOAT.fieldOf("slopeScale").forGetter(o -> o.slopeScale),
         Codec.FLOAT.fieldOf("valleyDepth").forGetter(o -> o.valleyDepth),
         Codec.FLOAT.fieldOf("valleyWidth").forGetter(o -> o.valleyWidth),
@@ -144,6 +142,14 @@ public class TerrainSettings {
 		Codec.FLOAT.fieldOf("mountainHeightScale").forGetter(o -> o.mountainHeightScale),
         Codec.FLOAT.fieldOf("mountainScale").forGetter(o -> o.mountainScale),
         Codec.FLOAT.fieldOf("plateauHeight").forGetter(o -> o.plateauHeight),
+		Codec.FLOAT.fieldOf("coatSharpness").forGetter(o -> o.coastSharpness),
+		Codec.FLOAT.fieldOf("valleyErosion").forGetter(o -> o.valleyErosion),
+		Codec.FLOAT.fieldOf("valleyWeirdness").forGetter(o -> o.valleyWeirdness),
+		Codec.FLOAT.fieldOf("riverErosion").forGetter(o -> o.riverErosion),
+		Codec.FLOAT.fieldOf("riverWeirdness").forGetter(o -> o.riverWeirdness),
+		Codec.FLOAT.fieldOf("lakeWeirdness").forGetter(o -> o.lakeWeirdness),
+		Codec.FLOAT.fieldOf("beachNoiseScale").forGetter(o -> o.beachNoiseScale),
+		Codec.FLOAT.fieldOf("beachHeight").forGetter(o -> o.beachHeight),
         Codec.INT.fieldOf("aquiferDepthOffset").forGetter(o -> o.aquiferDepthOffset)
     ).apply(instance, Terrain::new));
 
@@ -152,8 +158,6 @@ public class TerrainSettings {
     public float verticalScale;
     public float horizontalScale;
     public float baseHeight;
-    public int continentScale;
-    public float continentJitter;
     public float slopeScale;
     public float valleyDepth;
     public float valleyWidth;
@@ -161,11 +165,19 @@ public class TerrainSettings {
 	public float mountainHeightScale;
     public float mountainScale;
     public float plateauHeight;
+	public float coatSharpness;
+	public float valleyErosion;
+	public float valleyWeirdness;
+	public float riverErosion;
+	public float riverWeirdness;
+	public float lakeWeirdness;
+	public float beachNoiseScale;
+	public float beachHeight;
     public int aquiferDepthOffset;
 
     public Terrain(
             float weight, float baseScale, float verticalScale, float horizontalScale,
-            float baseHeight, int continentScale, float continentJitter, float slopeScale,
+            float baseHeight, float slopeScale, float coastSharpness, float valleyErosion, float valleyWeirness, float riverErosion, float riverWeirdness, float lakeWeirdness, float beachNoiseScale, float beachHeight,
             float valleyDepth, float valleyWidth, float mountainSharpness, float mountainHeightScale, float mountainScale,
             float plateauHeight, int aquiferDepthOffset
     ) {
@@ -174,8 +186,6 @@ public class TerrainSettings {
         this.verticalScale = verticalScale;
         this.horizontalScale = horizontalScale;
         this.baseHeight = baseHeight;
-        this.continentScale = continentScale;
-        this.continentJitter = continentJitter;
         this.slopeScale = slopeScale;
         this.valleyDepth = valleyDepth;
         this.valleyWidth = valleyWidth;
@@ -183,13 +193,21 @@ public class TerrainSettings {
 		this.mountainHeightScale = mountainHeightScale;
         this.mountainScale = mountainScale;
         this.plateauHeight = plateauHeight;
+		this.coastSharpness = coastSharpness;
+		this.valleyErosion = valleyErosion;
+		this.valleyWeirdness = valleyWeirdness;
+		this.riverErosion = riverErosion;
+		this.riverWeirdness = riverWeirdness;
+		this.lakeWeirdness = lakeWeirdness;
+		this.beachNoiseScale = beachNoiseScale;
+		this.beachHeight = beachHeight;
         this.aquiferDepthOffset = aquiferDepthOffset;
     }
 
     public Terrain copy() {
         return new Terrain(
             weight, baseScale, verticalScale, horizontalScale,
-            baseHeight, continentScale, continentJitter, slopeScale,
+            baseHeight, slopeScale, coastSharpness, valleyErosion, valleyWeirdness, riverErosion, riverWeirdness, lakeWeirdness, beachNoiseScale, beachHeight,
             valleyDepth, valleyWidth, mountainSharpness, mountainHeightScale, mountainScale,
             plateauHeight, aquiferDepthOffset
         );
