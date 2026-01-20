@@ -18,13 +18,21 @@ public class SingleContinentGenerator extends ContinentGenerator {
     }
     
     @Override
-    public void apply(Cell cell, float x, float y) {
-        super.apply(cell, x, y);
-        if (cell.continentX != this.center.x() || cell.continentZ != this.center.y()) {
-            cell.continentId = 0.0F;
-            cell.continentEdge = 0.0F;
-            cell.continentX = 0;
-            cell.continentZ = 0;
-        }
+public void apply(Cell cell, float x, float y) {
+    // 1. Chạy logic gốc để tính toán hình dáng
+    super.apply(cell, x, y);
+
+    // 2. Kiểm tra nếu không phải đảo trung tâm thì xóa
+    if (cell.continentX != this.center.x() || cell.continentZ != this.center.y()) {
+        cell.continentId = 0.0F;
+        cell.continentEdge = 0.0F;
+        cell.continentX = 0;
+        cell.continentZ = 0;
+    } else {
+        // --- PHẦN ADD THÊM CHO SINGLE CONTINENT ---
+        // Bạn có thể dùng verticalScale từ slider để làm đảo cao hơn
+        var settings = context.preset.world().continent;
+        cell.height *= settings.verticalScale; 
     }
+}
 }
