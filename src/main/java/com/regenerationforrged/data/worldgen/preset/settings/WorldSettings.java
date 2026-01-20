@@ -39,15 +39,7 @@ public class WorldSettings {
     		Codec.FLOAT.optionalFieldOf("continentNoiseGain", 0.26F).forGetter((o) -> o.continentNoiseGain),
     		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity),
 			Codec.FLOAT.optionalFieldOf("continentWarpStrength", 25F).forGetter((o) -> o.continentsWarpStrength),
-			Codec.FLOAT.optionalFieldOf("continentWarpScale" 200F).forGetter((o) -> o.continentWarpScale),
-			Codec.FLOAT.optionalFieldOf("coastSharpness" 0.5F).forGetter((o) -> o.coastSharpness),
-			Codec.FLOAT.optionalFieldOf("valleyErosion" 0.5F).forGetter((o) -> o.valleyErosion),
-			Codec.FLOAT.optionalFieldOf("valleyWeirdness" 1F).forGetter((o) -> o.valleyWeirdness),
-			Codec.FLOAT.optionalFieldOf("riverErosion" 1.5F).forGetter((o) -> o.riverErosion),
-			Codec.FLOAT.optionalFieldOf("riverWeirdness" 1.5F).forGetter((o) -> o.riverWeirdness),
-			Codec.FLOAT.optionalFieldOf("lakeWeirdNess" 0.5F).forGetter((o) -> o.lakeWeirdness),
-			Codec.INT.optionalFieldOf("beachNoiseScale").forGetter((o) -> o.beachNoiseScale),
-			Codec.INT.optionalFieldOf("beachHeight").forGetter((o) -> o.beachHeight)
+			Codec.FLOAT.optionalFieldOf("continentWarpScale" 200F).forGetter((o) -> o.continentWarpScale)
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;
@@ -61,18 +53,8 @@ public class WorldSettings {
         public float continentNoiseLacunarity;
 		public float continentWarpStrength;
 		public float contientWarpScale;
-		public float coastSharpness;
-		public float valleyErosion;
-		public float valleyWeirdness;
-		public float riverErosion;
-		public float riverWeirdness;
-		public float lakeWeirdness;
-		public int beachNoiseScale;
-		public int beachHeight;
         
-        public Continent(ContinentType continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity, float continentWarpStrength, float continentWarpScale, float coastSharpness,
-						valleyErosion valleyErosion, valleyWeirdness valleyWeirdness, riverErosion riverErosion, riverWeirdness riverWeirdness, lakeWeirdness,
-						beachNoiseScale beachNoiseScale, beachHeight beachHeight) {
+        public Continent(ContinentType continentType, DistanceFunction continentShape, int continentScale, float continentJitter, float continentSkipping, float continentSizeVariance, int continentNoiseOctaves, float continentNoiseGain, float continentNoiseLacunarity, float continentWarpStrength, float continentWarpScale) {
             this.continentType = continentType;
             this.continentShape = continentShape;
             this.continentScale = continentScale;
@@ -84,20 +66,10 @@ public class WorldSettings {
             this.continentNoiseLacunarity = continentNoiseLacunarity;
 			this.continentWarpStrength = continentWarpStrength;
 			this.continentWarpScale = continentWarpScale;
-			this.coastSharpness = coastSharpness;
-			this.valleyErosion = valleyErosion;
-			this.valleyWeirdness = valleyWeirdness;
-			this.riverErosion = riverErosion;
-			this.riverWeirdness = riverWeirdness;
-			this.lakeWeirdness = lakeWeirdness;
-			this.beachNoiseScale = beachNoiseScale;
-			this.beachHeight = beachHeight;
         }
         
         public Continent copy() {
-        	return new Continent(this.continentType, this.continentShape, this.continentScale, this.continentJitter, this.continentSkipping, this.continentSizeVariance, this.continentNoiseOctaves, this.continentNoiseGain, this.continentNoiseLacunarity, this.continentWarpStrength, this.continentWarpScale, this.coastSharpness,
-								this.valleyErosion, this.valleyWeirdness, this.riverErosion, this.riverWeirdness,
-								this.lakeWeirdness, this.beachNoiseScale, this.beachHeight);
+        	return new Continent(this.continentType, this.continentShape, this.continentScale, this.continentJitter, this.continentSkipping, this.continentSizeVariance, this.continentNoiseOctaves, this.continentNoiseGain, this.continentNoiseLacunarity, this.continentWarpStrength, this.continentWarpScale);
         }
     }
     
