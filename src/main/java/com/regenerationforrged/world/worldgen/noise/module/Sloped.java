@@ -29,7 +29,13 @@ record Sloped(Noise input, Noise exponent) implements Noise {
     }
 
     @Override
+    public Noise mapAll(Visitor vistitor) {
+        return visitor.apply(new Sloped(this.input.mapAll(visitor), this.exponent.mapAll(visitor));
+    }
+
+    @Override
     public Codec<Sloped> codec() {
         return CODEC;
     }
+
 }
