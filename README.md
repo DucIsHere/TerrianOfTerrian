@@ -1,5 +1,5 @@
-# Regeneration Forged
-Regeneration Forrged is a high-performance Minecraft World Generation mod designed with a unique Dual-Engine architecture. It allows creators to toggle between complex, procedurally generated Java logic and optimized, data-driven JSON density functions.
+# TerrianOfTerrian
+TerrianOfTerrian is a high-performance Minecraft World Generation mod designed with a unique Dual-Engine architecture. It allows creators to toggle between complex, procedurally generated Java logic and optimized, data-driven JSON density functions.
 
 **Successor of ReTerraForged**
 
@@ -46,4 +46,5 @@ Configuring Amp Noise
 For **JSON** presets, you can adjust the terrain scale in MixinNoiseParameters. It targets ImmutableCollections to ensure it only modifies data-driven noise, leaving internal vanilla constants untouched.
 
 
-***successor***
+
+***Original Source Code By Racoonman***
