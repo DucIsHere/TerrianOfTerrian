@@ -1,7 +1,13 @@
 # TerrianOfTerrian
+This is the next version of original project **ReTerraForged** 
+
+
+link original project https://github.com/racoonman2/ReTerraForged/tree/1.20.1
+
+Since the original version has stopped being updated, I decided to maintain it and develop new features.
+
 TerrianOfTerrian is a high-performance Minecraft World Generation mod designed with a unique Dual-Engine architecture. It allows creators to toggle between complex, procedurally generated Java logic and optimized, data-driven JSON density functions.
 
-**Successor of ReTerraForged**
 
 *Do not talk so much*
 
@@ -46,5 +52,10 @@ Configuring Amp Noise
 For **JSON** presets, you can adjust the terrain scale in MixinNoiseParameters. It targets ImmutableCollections to ensure it only modifies data-driven noise, leaving internal vanilla constants untouched.
 
 
+## Credits & Acknowledgments
 
+**Tác giả gốc:** Racoonman
+   Cảm ơn vì đã tạo ra nền tảng tuyệt vời này.
+  **Người duy trì hiện tại:** [Tên của bạn]
+  **Giấy phép:** [MIT License](./LICENSE)
 ***Original Source Code By Racoonman***
