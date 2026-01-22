@@ -32,6 +32,9 @@ public void apply(Cell cell, float x, float y) {
         // --- PHẦN ADD THÊM CHO SINGLE CONTINENT ---
         // Bạn có thể dùng verticalScale từ slider để làm đảo cao hơn
         var settings = context.preset.world().continent;
+        if (settings.general.enableSloped) {
+            cell.waterLevel = cell.height - (settings.terrain.plains.aquiferDepthOffSet / 100.0F);
+        }
         cell.height *= settings.verticalScale; 
     }
 }
