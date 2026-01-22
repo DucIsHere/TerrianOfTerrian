@@ -60,6 +60,8 @@ public abstract class ContinentGenerator implements SimpleContinent {
         this.clampMax = 1.0F;
         this.clampRange = this.clampMax - this.clampMin;
         this.offsetAlpha = context.preset.world().continent.continentJitter;
+        cell.continentEdge *= this.getShape(x, y, cell.continentEdge);
+        
         
         Domain warp = Domains.domainPerlin(seed.next(), 20, 2, 20.0F);
         warp = Domains.compound(warp, Domains.domainSimplex(seed.next(), this.continentScale, 3, this.continentScale));
@@ -79,6 +81,11 @@ public abstract class ContinentGenerator implements SimpleContinent {
         );
         this.shape = shape;
         this.shape = Noises.clamp(Noises.add(shape, detail, 0.65F), 0.0F, 1.0F);
+
+        if context.preset.world().general.enableSloped) {
+            float edge = cell.continentEdge;
+            cell.height += (edge * edge) * 10.0F;
+        }
 
         this.cache = new LegacyRiverCache(new SimpleRiverGenerator(this, context));
     }
