@@ -25,10 +25,19 @@ public class Rivermap implements ExpiringEntry {
     }
     
     public void apply(Cell cell, float x, float z) {
+        float riverMask = cell.riverMask;
         float rx = this.riverWarp.getX(x, z, 0);
         float rz = this.riverWarp.getZ(x, z, 0);
         float lx = this.lakeWarp.getOffsetX(rx, rz, 0);
         float lz = this.lakeWarp.getOffsetZ(rx, rz, 0);
+
+        if (riverMask > 0.0F) {
+            float valleySloped = riverMask * 0.15F;
+            cell.height -= valleySloped;
+            float depth = (float) Math.pow(1.2 - riverMask, 1.6F);
+            cell.height -= (depth * 18.0F);
+        }
+
         for (Network network : this.networks) {
             if (network.contains(rx, rz)) {
                 network.carve(cell, rx, rz, lx, lz);
