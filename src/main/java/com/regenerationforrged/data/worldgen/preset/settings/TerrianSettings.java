@@ -150,7 +150,7 @@ public class TerrainSettings {
 		Codec.FLOAT.fieldOf("lakeWeirdness").forGetter(o -> o.lakeWeirdness),
 		Codec.FLOAT.fieldOf("beachNoiseScale").forGetter(o -> o.beachNoiseScale),
 		Codec.FLOAT.fieldOf("beachHeight").forGetter(o -> o.beachHeight),
-        Codec.INT.fieldOf("aquiferDepthOffset").forGetter(o -> o.aquiferDepthOffset)
+        Codec.INT.fieldOf("aquiferDepthOffSet").forGetter(o -> o.aquiferDepthOffSet)
     ).apply(instance, Terrain::new));
 
     public float weight;
@@ -173,13 +173,13 @@ public class TerrainSettings {
 	public float lakeWeirdness;
 	public float beachNoiseScale;
 	public float beachHeight;
-    public int aquiferDepthOffset;
+    public int aquiferDepthOffSet;
 
     public Terrain(
             float weight, float baseScale, float verticalScale, float horizontalScale,
             float baseHeight, float slopeScale, float coastSharpness, float valleyErosion, float valleyWeirness, float riverErosion, float riverWeirdness, float lakeWeirdness, float beachNoiseScale, float beachHeight,
             float valleyDepth, float valleyWidth, float mountainSharpness, float mountainHeightScale, float mountainScale,
-            float plateauHeight, int aquiferDepthOffset
+            float plateauHeight, int aquiferDepthOffSet
     ) {
         this.weight = weight;
         this.baseScale = baseScale;
@@ -201,7 +201,7 @@ public class TerrainSettings {
 		this.lakeWeirdness = lakeWeirdness;
 		this.beachNoiseScale = beachNoiseScale;
 		this.beachHeight = beachHeight;
-        this.aquiferDepthOffset = aquiferDepthOffset;
+        this.aquiferDepthOffset = aquiferDepthOffSet;
     }
 
     public Terrain copy() {
@@ -209,7 +209,7 @@ public class TerrainSettings {
             weight, baseScale, verticalScale, horizontalScale,
             baseHeight, slopeScale, coastSharpness, valleyErosion, valleyWeirdness, riverErosion, riverWeirdness, lakeWeirdness, beachNoiseScale, beachHeight,
             valleyDepth, valleyWidth, mountainSharpness, mountainHeightScale, mountainScale,
-            plateauHeight, aquiferDepthOffset
+            plateauHeight, aquiferDepthOffSet
         );
     }
 }
