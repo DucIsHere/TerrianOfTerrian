@@ -105,7 +105,8 @@ public class TerrainSettings {
     		Codec.INT.fieldOf("terrainRegionSize").forGetter((o) -> o.terrainRegionSize),
     		Codec.FLOAT.fieldOf("globalVerticalScale").forGetter((o) -> o.globalVerticalScale),
     		Codec.FLOAT.fieldOf("globalHorizontalScale").forGetter((o) -> o.globalHorizontalScale),
-    		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains)
+    		Codec.BOOL.fieldOf("fancyMountains").forGetter((o) -> o.fancyMountains),
+			Codec.BOOL.fieldOf("SlopedTerrian").forGetter((o) -> o.SlopedTerrian)
     	).apply(instance, General::new));
     	
         public int terrainSeedOffset;
@@ -114,17 +115,19 @@ public class TerrainSettings {
         public float globalHorizontalScale;
         public boolean fancyMountains;
         public boolean legacyMountainScaling;
+		public boolean SlopedTerrian;
         
-        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains) {
+        public General(int terrainSeedOffset, int terrainRegionSize, float globalVerticalScale, float globalHorizontalScale, boolean fancyMountains, boolean SlopedTerrian) {
         	this.terrainSeedOffset = terrainSeedOffset;
         	this.terrainRegionSize = terrainRegionSize;
         	this.globalVerticalScale = globalVerticalScale;
         	this.globalHorizontalScale = globalHorizontalScale;
         	this.fancyMountains = fancyMountains;
+			this.SlopedTerrian = SlopedTerrian;
         }
         
         public General copy() {
-        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains);
+        	return new General(this.terrainSeedOffset, this.terrainRegionSize, this.globalVerticalScale, this.globalHorizontalScale, this.fancyMountains, this.SlopedTerrian);
         }
     }
     
