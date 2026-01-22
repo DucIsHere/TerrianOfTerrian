@@ -42,5 +42,10 @@ public class ContinentLerper2 implements CellPopulator {
         this.upper.apply(cell, x, y);
         float upperVal = cell.height;
         cell.height = NoiseUtil.lerp(lowerVal, upperVal, alpha);
+
+		if (cell.continentEdge > 0) {
+			float autoBase = 0.12F + (cell.continentEdge * 0.08F);
+			cell.Height += autoBase;
+		}
     }
 }
