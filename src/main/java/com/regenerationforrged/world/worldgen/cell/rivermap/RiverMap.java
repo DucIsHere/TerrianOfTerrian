@@ -44,6 +44,9 @@ public class Rivermap implements ExpiringEntry {
                 applySlope(cell, rx, rz);
             }
         }
+
+        float aquiferDepthOffSet = 0.55F;
+        cell.waterLevel = cell.height - aquiferDepthOffSet;
     }
 
     private void applySlope(Cell cell, float x, float z) {
