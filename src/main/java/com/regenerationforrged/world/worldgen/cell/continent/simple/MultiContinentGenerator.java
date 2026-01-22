@@ -64,5 +64,13 @@ public class MultiContinentGenerator extends ContinentGenerator {
         // 4. Gán giá trị cuối cùng (Map minDist về dải độ cao)
         cell.continentEdge = NoiseUtil.map(minDist, clampMin, clampMax, clampRange);
         cell.continentId = NoiseUtil.hash2D(cell.continentX, cell.continentZ);
+        cell.continentEdge = NoiseUtil.map(minDist, clampMin, clampMax, clampRange);
+
+        if (context.preset.world().general.enableSloped) {
+            float vErosion = cell.riverMask * context.preset.world().terrain.plains.valleyErosion;
+            float vWeird = (float)Math.sin(x * 0.05f + y * 0.05f) * context.preset.world().terrain.plains.valleyWeirdness;
+
+            cell.height -= (vErosion + vWeird);
+        }
     }
 }
