@@ -13,23 +13,18 @@ public record PlateauPopulator(
 
     @Override
     public void apply(Cell cell, float x, float z) {
-    float baseVal = this.base.compute(x, z, 0) * this.baseScale;
-    float heightVal = this.height.compute(x, z, 0) * this.heightScale;
-    float mountainDelta = (this.mountain != null) ? this.mountain.compute(x, z, 0) : 0.0F;
+        source.apply(cell, x, z);
 
-    float totalHeight = baseVal + heightVal + mountainDelta;
-
-    // LOGIC PLATEAU MỚI:
-    // Nếu plateauHeight > 0, ta sẽ bắt đầu "nén" các vùng cao hơn mức này
-    if (this.plateauHeight > 0.0F && totalHeight > this.plateauHeight) {
-        float overflow = totalHeight - this.plateauHeight;
-        // Làm phẳng phần vượt ngưỡng (ví dụ: chỉ cho phép tăng thêm 10% độ cao thực tế)
-        totalHeight = this.plateauHeight + (overflow * 0.1F);
-    }
-
-    cell.terrain = this.type;
-    cell.height = Math.max(totalHeight, 0.0F);
-    cell.erosion = this.erosion.compute(x, z, 0);
-    cell.weirdness = this.weirdness.compute(x, z, 0);
+        // Chỉ tác động lên đất liền và tránh làm hỏng sông (river < 0.25)
+        if (cell.height > minHeight && cell.river < 0.25F) {
+            float range = maxHeight - minHeight;
+            float delta = cell.height - minHeight;
+            
+            // Sử dụng hàm SmoothStep để làm phẳng đỉnh nhưng vẫn giữ độ mượt
+            float t = Math.min(1.0F, delta / range);
+            float plateaued = minHeight + (range * NoiseUtil.smoothStep(t) * (1.0F - smoothness));
+            
+            cell.height = plateaued;
+        }
     }
 }
