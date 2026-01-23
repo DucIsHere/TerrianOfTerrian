@@ -19,7 +19,8 @@ public record TerrainPopulator(
     float baseScale,
     float heightScale,
     float weight,
-    Noise mountain // optional, can be null
+    Noise mountain, // optional, can be null
+    float plateuHeight
 ) implements CellPopulator, WeightedPopulator {
 
     // Backwards-compatible convenience constructor (keeps previous behavior)
