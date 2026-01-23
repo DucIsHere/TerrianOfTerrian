@@ -34,6 +34,12 @@ public record TerrainPopulator(
 
         // Sample mountain noise if provided
         float mountainDelta = (this.mountain != null) ? this.mountain.compute(x, z, 0) : 0.0F;
+        float totalHeight = baseVal + heightVal + mountainDelta;
+
+        if (this.plateauHeight > 0.0F && totalHeight > this.plateauHeight) {
+            float overflow = totalHeight - this.plateauHeight;
+            totalHeight = this.plateauHeight + (overflow * 0.1F);
+        }
 
         cell.terrain = this.type;
         cell.height = Math.max(baseVal + heightVal + mountainDelta, 0.0F);
