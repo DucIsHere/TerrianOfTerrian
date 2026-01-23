@@ -55,6 +55,6 @@ public record TerrainPopulator(
 
     // New factory that accepts an optional mountain Noise
     public static TerrainPopulator make(Terrain type, Noise base, Noise height, Noise erosion, Noise weirdness, TerrainSettings.Terrain settings, Noise mountain) {
-        return new TerrainPopulator(type, base, height, erosion, weirdness, settings.baseScale, settings.verticalScale, settings.weight, mountain);
+        return new TerrainPopulator(type, base, height, erosion, weirdness, settings.baseScale, settings.verticalScale, settings.weight, mountain, settings.plateauHeight);
     }
 }
