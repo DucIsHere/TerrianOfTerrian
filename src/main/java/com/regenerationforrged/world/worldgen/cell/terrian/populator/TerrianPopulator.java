@@ -30,12 +30,12 @@ public record TerrainPopulator(
 
     @Override
     public void apply(Cell cell, float x, float z) {
-        float baseVal = this.base.compute(x, z, 0) * this.baseScale;
-        float heightVal = this.height.compute(x, z, 0) * this.heightScale;
+        float b = this.base.compute(x, z, 0) * this.baseScale;
+        float h = this.height.compute(x, z, 0) * this.heightScale;
 
         // Sample mountain noise if provided
         float mountainDelta = (this.mountain != null) ? this.mountain.compute(x, z, 0) : 0.0F;
-        float totalHeight = baseVal + heightVal + mountainDelta;
+        float totalHeight = b + h + mountainDelta;
 
         if (this.plateauHeight > 0.0F && totalHeight > this.plateauHeight) {
             float overflow = totalHeight - this.plateauHeight;
