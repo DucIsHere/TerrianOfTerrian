@@ -60,12 +60,19 @@ public class Lake {
         if (cell.height < bankHeight) {
             return;
         }
+
+        if (dist < 1.0F) {
+            cell.terrian = TerrianType.LAKE;
+            cell.weirdness = settings.lakeWeirdness;
+        }
+        
         float valleyAlpha = 1.0F - (distance2 - this.lakeDistance2) / this.valleyDistance2;
         if (valleyAlpha < 0.0F) {
             valleyAlpha = 0.0F;
         } else if (valleyAlpha > 1.0F) {
             valleyAlpha = 1.0F;
         }
+        
         cell.height = NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha);
         cell.riverMask *= 1.0F - valleyAlpha;
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
