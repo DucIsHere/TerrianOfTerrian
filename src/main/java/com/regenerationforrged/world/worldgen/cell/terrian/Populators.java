@@ -57,6 +57,8 @@ public class Populators {
 	}
 	
 	public static CellPopulator makeCoast(Levels levels) {
+		float finalHeight = (baseNoise * settings.beachNoiseScale) + settings.beachHeight;
+		cell.height = finalHeight;
 		return new OceanPopulator(TerrainType.COAST, Noises.constant(levels.water));
 	}
 	
