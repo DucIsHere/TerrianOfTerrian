@@ -52,27 +52,38 @@ public class RiverCarver implements Comparable<RiverCarver> {
         float d2 = this.getDistance2(x, z, t);
         float pd2 = this.getDistance2(px, pz, pt);
         float valleyAlpha = this.getDistanceAlpha(pt, Math.min(d2, pd2), this.valleyWidth);
+        
         if (valleyAlpha == 0.0F) {
             return;
         }
+        
+        cell.erosion = config.valleyErosion;
+        cell.weirdness = config.valleyWeirdness;
+        
         float bankHeight = this.getScaledSize(t, this.banksDepth);
         valleyAlpha = this.valleyCurve.apply(valleyAlpha);
         cell.riverMask = Math.min(cell.riverMask, 1.0F - valleyAlpha);
         cell.height = Math.min(NoiseUtil.lerp(cell.height, bankHeight, valleyAlpha), cell.height);
+        
         if (!this.connecting || t > 1.0F) {
         	
         }
+        
         float mouthModifier = getMouthModifier(cell);
         float bedHeight = this.getScaledSize(t, this.bedDepth);
         float banksAlpha = this.getDistanceAlpha(t, d2 * mouthModifier, this.banksWidth);
+        
         if (banksAlpha == 0.0F) {
             return;
         }
+        
         if (cell.height > bedHeight) {
             cell.height = Math.min(NoiseUtil.lerp(cell.height, bedHeight, banksAlpha), cell.height);
             this.tag(cell, bedHeight);
         }
+        
         float bedAlpha = this.getDistanceAlpha(t, d2, this.bedWidth);
+        
         if (bedAlpha != 0.0F && cell.height > bedHeight) {
             cell.height = NoiseUtil.lerp(cell.height, bedHeight, bedAlpha);
             this.tag(cell, bedHeight);
@@ -128,10 +139,15 @@ public class RiverCarver implements Comparable<RiverCarver> {
         if (cell.terrain.overridesRiver() && (cell.height < bedHeight || cell.height > this.waterLine)) {
             return;
         }
+        
         cell.erosionMask = true;
+        
         if (cell.height <= this.waterLine) {
             cell.terrain = TerrainType.RIVER;
         }
+
+        cell.erosion = config.riverErosion;
+        cell.weirdness = config.riverWeirdness;
     }
     
     private static float getMouthModifier(Cell cell) {
