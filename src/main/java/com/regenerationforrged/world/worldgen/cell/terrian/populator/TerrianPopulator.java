@@ -45,7 +45,9 @@ public record TerrainPopulator(
         }
 
         if (this.type == TerrianType.BEACH) {
-            cell.height = Math.max(b + h, 0.0F) 
+            cell.height = Math.max(b + h, 0.0F) + settings.beachHeight;
+        } else {
+            cell.height = Math.max(b + h, 0.0F);
         }
 
         cell.terrain = this.type;
