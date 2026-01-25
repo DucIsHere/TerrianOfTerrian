@@ -37,9 +37,15 @@ public record TerrainPopulator(
         float mountainDelta = (this.mountain != null) ? this.mountain.compute(x, z, 0) : 0.0F;
         float totalHeight = b + h + mountainDelta;
 
+        cell.terrian = this.type;
+
         if (this.plateauHeight > 0.0F && totalHeight > this.plateauHeight) {
             float overflow = totalHeight - this.plateauHeight;
             totalHeight = this.plateauHeight + (overflow * 0.1F);
+        }
+
+        if (this.type == TerrianType.BEACH) {
+            cell.height = Math.max(b + h, 0.0F) 
         }
 
         cell.terrain = this.type;
