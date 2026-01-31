@@ -14,6 +14,10 @@ public class RiverConfig {
     public int length;
     public int length2;
     public float fade;
+    public float valleyErosion;
+    public float valleyWeirdness;
+    public float riverErosion;
+    public float riverWeirdness;
     
     private RiverConfig(Builder builder) {
         this.main = builder.main;
@@ -26,9 +30,13 @@ public class RiverConfig {
         this.length = builder.length;
         this.length2 = builder.length * builder.length;
         this.fade = builder.fade;
+        this.valleyErosion = 0F;
+        this.valleyWeirdness = 0F;
+        this.riverErosion = 0F;
+        this.riverWeirdness = 0F;
     }
     
-    public RiverConfig(boolean main, int order, int bedWidth, int bankWidth, float bedHeight, float minBankHeight, float maxBankHeight, int length, int length2, float fade) {
+    public RiverConfig(boolean main, int order, int bedWidth, int bankWidth, float bedHeight, float minBankHeight, float maxBankHeight, int length, int length2, float fade, float vE, float vW, float rE, float rW) {
         this.main = main;
         this.order = order;
         this.bedWidth = bedWidth;
@@ -39,6 +47,10 @@ public class RiverConfig {
         this.length = length;
         this.length2 = length2;
         this.fade = fade;
+        this.valleyErosion = vE;
+        this.valleyWeirdness = vW;
+        this.riverErosion = rE;
+        this.riverWeirdness = rW;
     }
     
     public RiverConfig createFork(float connectWidth, Levels levels) {
@@ -52,7 +64,7 @@ public class RiverConfig {
     public RiverConfig createFork(int bedHeight, int bedWidth, int bankWidth, Levels levels) {
         int minBankHeight = Math.max(levels.groundLevel, levels.scale(this.minBankHeight) - 1);
         int maxBankHeight = Math.max(minBankHeight, levels.scale(this.maxBankHeight) - 1);
-        return new RiverConfig(false, this.order + 1, bedWidth, bankWidth, levels.scale(bedHeight), levels.scale(minBankHeight), levels.scale(maxBankHeight), this.length, this.length2, this.fade);
+        return new RiverConfig(false, this.order + 1, bedWidth, bankWidth, levels.scale(bedHeight), levels.scale(minBankHeight), levels.scale(maxBankHeight), this.length, this.length2, this.fade, this. valleyErosion, this.valleyWeirdness, this.riverErosion, this,riverWeirdness);
     }
     
     public static Builder builder(Levels levels) {
