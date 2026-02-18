@@ -1,8 +1,0 @@
-TOTInit.java
-MixinUtil.java
-Toasts.java
-Tooltips.java
-Cache.java
-Label.java
-WorldFilters.java
-LazySupplier.java
