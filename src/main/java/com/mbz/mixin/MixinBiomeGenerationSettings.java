@@ -1,4 +1,4 @@
-package com.regenerationforrged.mixin;
+package com.mbz.mixin;
 
 import java.util.List;
 import java.util.function.Supplier;
