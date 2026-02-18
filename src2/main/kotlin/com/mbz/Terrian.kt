@@ -24,7 +24,7 @@ import com.mbz.world.worldgen.structure.rule.StructureRule
 import com.mbz.world.worldgen.structure.rule.StructureRules
 import com.mbz.world.worldgen.surface.rule.MBZSurfaceRules
 
-object Terrian {
+object Terrain {
     const val MOD_ID = "mbz"
     val LOGGER = LogManager.getLogger("Terrian")
 
