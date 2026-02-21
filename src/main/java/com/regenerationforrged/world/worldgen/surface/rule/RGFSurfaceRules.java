@@ -11,16 +11,22 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 import com.regenerationforrged.platform.RegistryUtil;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.surface.rule.StrataRule.Strata;
+import com.regenerationforrged.world.worldgen.surface.rule.SnowStrataRule;
 
 public class RGFSurfaceRules {
 
 	public static void bootstrap() {
 		register("strata", StrataRule.CODEC);
+		register("snow_strata, SnowStrataRule.CODEC);
 	}
 	
 	public static StrataRule strata(ResourceLocation name, Holder<Noise> selector, List<Strata> strata, int iterations) {
 		return new StrataRule(name, selector, strata, iterations);
 	}
+
+	public static SurfaceRules.RuleSource snowStrata(Holder<Noise> depth, Holder<Noise> layer) {
+        return new SnowStrataRule(depth, layer);
+    }
 	
 	public static void register(String name, Codec<? extends SurfaceRules.RuleSource> value) {
 		RegistryUtil.register(BuiltInRegistries.MATERIAL_RULE, name, value);
