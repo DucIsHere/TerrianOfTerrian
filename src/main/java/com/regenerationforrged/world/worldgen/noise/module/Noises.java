@@ -71,6 +71,7 @@ public class Noises {
 		register("sloped", Sloped.CODEC);
 		register("foothill", Foothill.CODEC);
 		register("mountpeak", MountPeak.CODEC);
+		register("mountain_range", MountainRange.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
@@ -430,6 +431,20 @@ public class Noises {
  
 	private static void register(String name, Codec<? extends Noise> value) {
 		RegistryUtil.register(RTFBuiltInRegistries.NOISE_TYPE, name, value);
+	}
+
+	public static Noise mountainRange(Noise axis, Noise ridge, float amplitude, float halfWidth) {
+		return new MountainRange(
+			axis,           // Noise điều khiển đường đi uốn lượn
+            ridge,          // Noise tạo đỉnh sống núi nhọn
+            1.0f / 512.0f,  // invScale: tỷ lệ phủ (512 block)
+            1.0f,           // axisScale
+            200.0f,         // axisSpread: độ văng của dải núi so với trục
+            halfWidth,      // Độ rộng chân núi (ví dụ 800m)
+            2.5f,           // ridgeFreq: tần số chi tiết của đỉnh
+            amplitude,      // Cao tối đa (ông truyền 1700f vào đây) 
+            1.3f            // sharpness: độ nhọn sống núi
+		);
 	}
 	
 	public record HolderHolder(Holder<Noise> holder) implements Noise {
