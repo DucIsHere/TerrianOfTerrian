@@ -389,8 +389,22 @@ public class Noises {
         return new PeakLimiterNoise(input, min, max);
     }
 
-    public static Noise radiusFoothill(Noise mountain, float transitionWidth) {
+    public static Noise Foothill(Noise mountain, float transitionWidth) {
         return new RadiusFoothillNoise(mountain, 0, transitionWidth);
+		
+    }
+
+	public static Noise radiusFoothill(Noise axis, Noise ridge, Noise peak) {
+    // 1. Tạo xương sống 1700m dựa trên file MountainRange của ông
+        Noise range = new MountainRange(
+            axis, ridge, 1.0f/512.0f, 1.0f, 150.0f, 800.0f, 2.0f, 1700.0f, 1.2f
+    );
+
+    // 2. Gắn đỉnh Everest 1800m (Part 2)
+        Noise linked = new LinkedEverest(range, peak, 1700.0f, 1800.0f);
+
+    // 3. Làm thoải chân núi (Part 3) - dùng chính hàm helper ông vừa viết
+        return radiusFoothill(linked, 250.0f);
     }
 	
 	public static Noise warpPerlin(Noise input, int seed, int scale, int octaves, float pow) {
