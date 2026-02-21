@@ -72,6 +72,7 @@ public class Noises {
 		register("foothill", Foothill.CODEC);
 		register("mountpeak", MountPeak.CODEC);
 		register("mountain_range", MountainRange.CODEC);
+		register("spine_mount", SpineMount.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
@@ -419,6 +420,10 @@ public class Noises {
 	public static Noise warp(Noise input, Domain domain) {
 		return new Warp(input, domain);
 	}
+
+	public static Noise spineMount(Noise base, Noise peak) {
+        return new LinkedEverest(base, peak, 1700.0f, 1800.0f);
+    }
 
 	@Deprecated
 	public static Noise cache2d(Noise input) {
