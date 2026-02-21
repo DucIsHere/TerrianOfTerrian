@@ -68,6 +68,7 @@ public class Noises {
 		register("linear_spline", LinearSpline.CODEC);
 		register("cache", Cache2d.CODEC);
 		register("sloped", Sloped.CODEC);
+		register("foothill", Foothill.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
