@@ -401,7 +401,7 @@ public class Noises {
     );
 
     // 2. Gắn đỉnh Everest 1800m (Part 2)
-        Noise linked = new LinkedEverest(range, peak, 1700.0f, 1800.0f);
+        Noise linked = new SpineMount(range, peak, 1700.0f, 1800.0f);
 
     // 3. Làm thoải chân núi (Part 3) - dùng chính hàm helper ông vừa viết
         return radiusFoothill(linked, 250.0f);
@@ -436,7 +436,7 @@ public class Noises {
 	}
 
 	public static Noise spineMount(Noise base, Noise peak) {
-        return new LinkedEverest(base, peak, 1700.0f, 1800.0f);
+        return new SpineMount(base, peak, 1700.0f, 1800.0f);
     }
 
 	@Deprecated
