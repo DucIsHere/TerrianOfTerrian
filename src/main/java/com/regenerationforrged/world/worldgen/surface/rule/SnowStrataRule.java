@@ -2,18 +2,15 @@ package com.regenerationforrged.world.worldgen.surface.rule;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.util.KeyDispatchDataCodec;
-
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
-import com.regenerationforrged.world.worldgen.RGFRandomState;
+import com.regenerationforrged.world.worldgen.RTFRandomState;
 import com.regenerationforrged.world.worldgen.surface.RTFSurfaceSystem;
 
 public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise) implements SurfaceRules.RuleSource {
@@ -27,7 +24,7 @@ public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise)
         if (ctx.system instanceof RTFSurfaceSystem && (Object) ctx.randomState instanceof RTFRandomState rtfRandomState) {
             return new Source(ctx, rtfRandomState.seed(this.depthNoise.value()), this.layerNoise.value());
         }
-        throw new IllegalStateException("Missing RGF Context");
+        throw new IllegalStateException("RGF Context is missing!");
     }
 
     @Override
@@ -42,7 +39,7 @@ public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise)
         private long lastXZ = Long.MIN_VALUE;
         private int surfaceY;
         private int snowDepth;
-        private int layerCount;
+        private int layers;
 
         public Source(SurfaceRules.Context context, Noise depthNoise, Noise layerNoise) {
             this.context = context;
@@ -57,13 +54,12 @@ public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise)
                 this.lastXZ = this.context.lastUpdateXZ;
             }
 
-            // 1. Xử lý lớp Snow Layer trên cùng (Da)
+            // ĐIỂM QUAN TRỌNG: Lớp mượt bằng Layer (như trong ảnh bạn gửi)
             if (y == this.surfaceY) {
-                return Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, this.layerCount);
+                return Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, this.layers);
             }
 
-            // 2. Xử lý lớp Snow Block dày bên dưới (Thịt)
-            // Lấp đầy từ surfaceY-1 xuống tới (surfaceY - snowDepth)
+            // Lớp dày 9-15 block (Snow Block nguyên)
             if (y < this.surfaceY && y >= (this.surfaceY - this.snowDepth)) {
                 return Blocks.SNOW_BLOCK.defaultBlockState();
             }
@@ -74,14 +70,18 @@ public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise)
         private void update(int x, int z) {
             this.surfaceY = this.context.chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x & 15, z & 15);
             
-            // Tính toán độ dày dựa trên Noise (Bạn có thể map Y vào đây để Everest dày hơn)
-            // Ví dụ: từ 6.0 đến 7.0 block
-            float d = this.depthNoise.compute(x, z, 0); 
-            this.snowDepth = Math.round(d);
+            // Logic BigGlobe: Tuyết dày dần từ base lên peak
+            // surfaceY lúc này có thể lên tới 2048
+            float heightAlpha = Math.max(0, (float)(this.surfaceY - 60) / 1000.0f); 
+            float baseThickness = 7.0f + (heightAlpha * 8.0f); // Tăng dần lên 15 blocks
+            
+            float d = this.depthNoise.compute(x, z, 0);
+            this.snowDepth = Math.round(baseThickness + d);
 
-            // Tính toán số layer (1-3) để làm mượt chân núi
+            // Tính toán độ mượt (1-8 lớp layer)
+            // Bạn có thể dùng Noise để làm mặt tuyết gợn sóng như ảnh
             float l = this.layerNoise.compute(x, z, 1);
-            this.layerCount = 1 + Math.round(l * 2); // Map 0..1 sang 1..3
+            this.layers = 1 + Math.round(Math.abs(l) * 7); // Trả về từ 1 đến 8 lớp
         }
     }
 }
