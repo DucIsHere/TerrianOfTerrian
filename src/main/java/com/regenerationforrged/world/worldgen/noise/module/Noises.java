@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Holder;
+
 import com.regenerationforrged.platform.RegistryUtil;
 import com.regenerationforrged.registries.RTFBuiltInRegistries;
 import com.regenerationforrged.world.worldgen.noise.domain.Domain;
@@ -69,6 +70,7 @@ public class Noises {
 		register("cache", Cache2d.CODEC);
 		register("sloped", Sloped.CODEC);
 		register("foothill", Foothill.CODEC);
+		register("mountpeak", MountPeak.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
@@ -380,6 +382,14 @@ public class Noises {
 	public static Noise max(Noise input1, Noise input2) {
 		return new Max(input1, input2);
 	}
+
+	public static Noise peakLimit(Noise input, float min, float max) {
+        return new PeakLimiterNoise(input, min, max);
+    }
+
+    public static Noise radiusFoothill(Noise mountain, float transitionWidth) {
+        return new RadiusFoothillNoise(mountain, 0, transitionWidth);
+    }
 	
 	public static Noise warpPerlin(Noise input, int seed, int scale, int octaves, float pow) {
 		return warp(input, 
