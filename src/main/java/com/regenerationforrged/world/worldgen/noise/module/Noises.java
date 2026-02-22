@@ -73,6 +73,7 @@ public class Noises {
 		register("mountpeak", MountPeak.CODEC);
 		register("mountain_range", MountainRange.CODEC);
 		register("spine_mount", SpineMount.CODEC);
+		register("valley_spreader", ValleySpreader.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
@@ -438,6 +439,11 @@ public class Noises {
 	public static Noise spineMount(Noise base, Noise peak) {
         return new SpineMount(base, peak, 1700.0f, 1800.0f);
     }
+
+	public static Noise valley(Noise input, float valleyLevel, float flatness) {
+		return new ValleySpreader(input, valleyLevel, flatness);
+	}
+
 
 	@Deprecated
 	public static Noise cache2d(Noise input) {
