@@ -80,7 +80,14 @@ public class TileGenerator {
 	        }
 	    }
 		return CompletableFuture.allOf(futures).thenApply((v) -> {
-			this.filters.apply(tile, true);
+			// 1. Lấy thiết lập Sharpness từ TerrainSettings (giả sử bạn đã lưu nó trong Heightmap)
+			Sharpness currentSharpness = this.heightmap.getSettings().terrain().sharpness;
+
+			// 2. Chạy bộ lọc Sharpness trước để định hình độ nhọn
+			new SharpnessFilter(currentSharpness).apply(tile, tile.getX(), tile.getZ(), 1);
+
+			// 3. Sau đó mới chạy các Filter cũ (Erosion, Smoothing...)
+			this.filters.apply(tile, true, applyOptionalFilters);
 			return tile;
 		});
 	}

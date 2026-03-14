@@ -1,8 +1,8 @@
 package com.regenerationforrged.world.worldgen.biome;
 
-public emum Blend implements BiomeParameter {
-  LOW_BLEND(-1.0F, 0.35F);
-  MID_BLEND(-0.5F, 0.75F);
+public enum Blend implements BiomeParameter {
+  LOW_BLEND(-1.0F, 0.35F),
+  MID_BLEND(-0.5F, 0.75F),
   HIGH_BLEND(0.75F, 1.5F);
 
   private final float min;

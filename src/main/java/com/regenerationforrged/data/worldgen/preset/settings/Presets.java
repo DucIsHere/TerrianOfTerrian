@@ -286,5 +286,5 @@ public class Presets {
 		null,
 		null,
 		null
-	)
+	);
 }

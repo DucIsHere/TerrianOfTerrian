@@ -17,7 +17,7 @@ import com.regenerationforrged.registries.RGFRegistries;
 class MixinMinecraftServer {
 
 	@Inject(at = @At("HEAD"), method = "setInitialSpawn")
-    private static void findSpawnPosition(ServerLevel serverLevel, ...) {
+    private static void findSpawnPosition(ServerLevel serverLevel, ServerLevelData serverLevelData, boolean bl, boolean bl2, CallbackInfo callback) {
     serverLevel.registryAccess().lookup(RGFRegistries.PRESET).flatMap(r -> r.get(Preset.KEY)).ifPresent(preset -> {
 		boolean isJava = preset.value().world().properties.isJavaEngine;
         // Kiểm tra ID của Preset để chốt Mode

@@ -22,8 +22,8 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaced;
 
 import com.regenerationforrged.RGFCommon;
-import com.regenerationforrged.data.worldgen.preset.RGFMiscSettings;
-import com.regenerationforrged.data.worldgen.preset.RGFPreset;
+import com.regenerationforrged.data.worldgen.preset.MiscellaneousSettings;
+import com.regenerationforrged.data.worldgen.preset.Preset;
 import com.regenerationforrged.data.worldgen.RGFConfiguredFeatures;
 
 public class RGFPlacedFeatures {
@@ -37,10 +37,10 @@ public class RGFPlacedFeatures {
     public static final RegistryKey<PlacedFeature> ACACIA_TREES = create("trees/acacia");
     public static final RegistryKey<PlacedFeature> DARK_OAK_TREES = create("trees/dark_oak");
 
-    public static void bootstrap(RGFPreset preset, BootstrapContext<PlacedFeature> ctx) {
+    public static void bootstrap(Preset preset, BootstrapContext<PlacedFeature> ctx) {
 
         HolderGetter<ConfiguredFeature<?, ?>> features = ctx.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
-        RGFMiscSettings misc = preset.misc();
+        MiscellaneousSettings miscellaneousSettings = preset.misc();
 
         // Tree placement modifiers
         PlacementModifier heightmap = HeightmapPlacementModifier.of();

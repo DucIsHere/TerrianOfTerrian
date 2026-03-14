@@ -67,7 +67,10 @@ public class Noises {
 		register("erosion", Erosion.CODEC);
 		register("linear_spline", LinearSpline.CODEC);
 		register("cache", Cache2d.CODEC);
-		register("sloped", Sloped.CODEC);
+		register("radius_foothill", RadiusFoothill.CODEC);
+		register("mount_peak", MountPeak.CODEC);
+		register("mountain_range", MountainRange.CODEC);
+		register("spine_mount", SpineMount.CODEC);
 		
 		register("legacy_temperature", LegacyTemperature.CODEC);
 		register("legacy_moisture", LegacyMoisture.CODEC);
@@ -408,6 +411,31 @@ public class Noises {
 		return new Warp(input, domain);
 	}
 
+	public static Noise mountPeak(Noise input, float min, float max) {
+		return new MountPeak(input, min, max);
+	}
+
+	public static Noise Foothill(Noise mountain, float transitionWidth) {
+		return new RadiusFoothill(mountain, transitionWidth);
+	}
+
+	public static Noise radiusFoothill(Noise axis, Noise ridge, Noise peak) {
+    // 1. Tạo xương sống 1700m dựa trên file MountainRange của ông
+        Noise range = new MountainRange(
+            axis, ridge, 1.0f/512.0f, 1.0f, 150.0f, 800.0f, 2.0f, 1700.0f, 1.2f
+    );
+
+    // 2. Gắn đỉnh Everest 1800m (Part 2)
+        Noise linked = new SpineMount(range, peak, 1700.0f, 1800.0f);
+
+    // 3. Làm thoải chân núi (Part 3) - dùng chính hàm helper ông vừa viết
+        return radiusFoothill(linked, 250.0f);
+    }
+
+	public static Noise spineMount(Noise base, Noise peak) {
+        return new SpineMount(base, peak, 1700.0f, 1800.0f);
+    }
+
 	@Deprecated
 	public static Noise cache2d(Noise input) {
 		return new Cache2d(input);
@@ -419,6 +447,20 @@ public class Noises {
  
 	private static void register(String name, Codec<? extends Noise> value) {
 		RegistryUtil.register(RTFBuiltInRegistries.NOISE_TYPE, name, value);
+	}
+
+	public static Noise mountainRange(Noise axis, Noise ridge, float amplitude, float halfWidth) {
+		return new MountainRange(
+			axis,           // Noise điều khiển đường đi uốn lượn
+            ridge,          // Noise tạo đỉnh sống núi nhọn
+            1.0f / 512.0f,  // invScale: tỷ lệ phủ (512 block)
+            1.0f,           // axisScale
+            200.0f,         // axisSpread: độ văng của dải núi so với trục
+            halfWidth,      // Độ rộng chân núi (ví dụ 800m)
+            2.5f,           // ridgeFreq: tần số chi tiết của đỉnh
+            amplitude,      // Cao tối đa (ông truyền 1700f vào đây) 
+            1.3f            // sharpness: độ nhọn sống núi
+		);
 	}
 	
 	public record HolderHolder(Holder<Noise> holder) implements Noise {

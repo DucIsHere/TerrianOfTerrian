@@ -2,6 +2,7 @@ package com.regenerationforrged.world.worldgen.biome;
 
 // Sử dụng chung interface với Erosion và Weirdness để dễ dàng quản lý
 public enum Sharpness implements BiomeParameter {
+    OFF(0.0F, 0.0F),
     LOWEST(-1.0F, -0.75F),
     LOW(-0.75F, -0.35F),
     BELOW_AVERAGE(-0.35F, -0.1F),
