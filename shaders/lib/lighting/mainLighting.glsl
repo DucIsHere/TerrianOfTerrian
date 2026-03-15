@@ -2,6 +2,8 @@
 #include "/lib/colors/lightAndAmbientColors.glsl"
 #include "/lib/lighting/ggx.glsl"
 #include "/lib/lighting/minimumLighting.glsl"
+#include "/lib/lightning/ssgi.glsl"
+#include "/lib/util/rayMarching.glsl"
 
 #if SHADOW_QUALITY > -1 && (defined OVERWORLD || defined END)
     #include "/lib/lighting/shadowSampling.glsl"
@@ -574,8 +576,13 @@ void DoLighting(inout vec4 color, inout vec3 shadowMult, vec3 playerPos, vec3 vi
         #endif
     #endif
 
+    vec3 godRays = getHorizonVolumetric(depth, texCoord);
+
+    vec3 gi = getHorizonGI(normalM, playerPos);
+
     // Mix Colors
     vec3 finalDiffuse = pow2(directionShade * vanillaAO) * (blockLighting + pow2(sceneLighting) + minLighting) + pow2(emission);
+    finalDiffuse += godRays + gi;
     finalDiffuse = sqrt(max(finalDiffuse, vec3(0.0))); // sqrt() for a bit more realistic light mix, max() to prevent NaNs
 
     // Apply Lighting
