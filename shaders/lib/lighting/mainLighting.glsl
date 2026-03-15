@@ -563,6 +563,17 @@ void DoLighting(inout vec4 color, inout vec3 shadowMult, vec3 playerPos, vec3 vi
     #ifdef LIGHT_HIGHLIGHT
         float specularHighlight = GGX(normalM, nViewPos, lightVec, NdotLmax0, smoothnessG);
 
+        float roghnessPBR = pow2(1.0 - smoothnessG);
+
+        float cosTheta = clamp(dot(normalM, nViewPos), 0.0, 1.0);
+        vec3 F0 = mix(vec3(0.04), baseColor.rgb, metalnessG);
+        vec3 F = F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+
+        float specPBR = GGX(normalM, nViewPos, lightVec, NdotLmax, smoothnessG);
+        vec3 specularFinal = specPBR * F * shadowMult * highlightColor;
+
+        lightHighlight += specularFinal;
+
         specularHighlight *= highlightMult;
 
         lightHighlight = isEyeInWater != 1 ? shadowMult : pow(shadowMult, vec3(0.25)) * 0.35;
@@ -574,6 +585,7 @@ void DoLighting(inout vec4 color, inout vec3 shadowMult, vec3 playerPos, vec3 vi
         #ifdef MOON_PHASE_INF_REFLECTION
             lightHighlight *= pow2(moonPhaseInfluence);
         #endif
+        
     #endif
 
     vec3 godRays = getHorizonVolumetric(depth, texCoord);
@@ -589,4 +601,5 @@ void DoLighting(inout vec4 color, inout vec3 shadowMult, vec3 playerPos, vec3 vi
     color.rgb *= finalDiffuse;
     color.rgb += lightHighlight;
     color.rgb *= pow2(1.0 - darknessLightFactor);
+
 }

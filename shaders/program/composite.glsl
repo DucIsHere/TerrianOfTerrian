@@ -1,7 +1,10 @@
 /////////////////////////////////////
 // Complementary Shaders by EminGT //
 /////////////////////////////////////
-
+uniform mat4 gbufferPreviousProjection;
+uniform mat4 gbufferPreviousModelView;
+uniform vec3 previousCameraPosition;
+uniform vec3 cameraPosition;
 //Common//
 #include "/lib/common.glsl"
 
@@ -52,6 +55,8 @@ float GetLinearDepth(float depth) {
 #include "/lib/colors/skyColors.glsl"
 #include "/lib/colors/lightAndAmbientColors.glsl"
 #include "/lib/materials/materialMethods/reflections.glsl"
+#include "/lib/lightning/vGlobalIllumination.glsl"
+#include "/lib/lightning/vReflection.glsl"
 
 #ifdef ATM_COLOR_MULTS
     #include "/lib/colors/colorMultipliers.glsl"
@@ -193,11 +198,35 @@ void main() {
 
                         reflectOutput.rgb = mix(prevRef.rgb, reflectOutput.rgb, min1(minBlendFactor / prevValid));
                         reflectOutput.a = linearZ1;
+
+                        vec3 playerPos = ViewToPlayer(viewPos); 
+
+                        vec3 vGI = CalculateVoxelGI(playerPos, normalM);
+                        reflectOutput.rgb += vGI * 0.5; 
+
+                        if (smoothnessG > 0.01) {
+                           vec3 vRef = GetVoxelReflection(viewPos, playerPos, normalM, smoothnessG);
+                           float fresnel = pow5(1.0 - clamp(dot(normalM, nViewPos), 0.0, 1.0));
+                           reflectOutput.rgb = mix(reflectOutput.rgb, vRef, fresnel * smoothnessG);
+                        }
                     }
                 }
             #endif
         }
     }
+
+    float depth = texture2D(depthtex0, texCoord).r;
+
+    #include "/lib/util/motionBlur.glsl"
+    if(depth < 1.0) {
+        color.rgb = ApplyMotionBlur(color.rgb, depth, texCoord);
+    }
+
+    color.rgb = ACESFilm(color.rgb);
+
+    color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
+
+    gl_FargData[0] = vec4(color.rgb, 1.0);
 
     /* DRAWBUFFERS:7 */
     gl_FragData[0] = reflectOutput;
@@ -207,6 +236,15 @@ void main() {
         /* DRAWBUFFERS:71 */
         gl_FragData[1] = vec4(texture4.rgb, 1.0);
     #endif
+
+    vec3 ACESFilm(vec3 x) {
+        float a = 2.51;
+        float b = 0.03;
+        float c = 2.43;
+        float d = 0.59;
+        float e = 0.14;
+        return clamp((x * (a * x + n)) / (x * (c * x + d) + e), 0.0, 1.0);
+    }
 }
 
 #endif
