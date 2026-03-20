@@ -1,4 +1,6 @@
 // Volumetric tracing from Robobo1221, highly modified
+#define VL_SAMPLES 160
+#define VL_SHARPNESS 0.9
 
 #include "/lib/colors/lightAndAmbientColors.glsl"
 
@@ -21,6 +23,11 @@ vec4 DistortShadow(vec4 shadowpos, float distortFactor) {
 vec4 GetVolumetricLight(inout vec3 color, inout float vlFactor, vec3 translucentMult, float lViewPos0, float lViewPos1, vec3 nViewPos, float VdotL, float VdotU, vec2 texCoord, float z0, float z1, float dither) {
     vec4 volumetricLight = vec4(0.0);
     float vlMult = 1.0 - maxBlindnessDarkness;
+
+    float scattering = pow(VdotL * 0.5 + 0.5, 12.0);
+    volumetricLight.rgb *= scattering * sunColor * 2.5;
+
+    volumetricLight.rgb *= smoothstep(0.0, 1.0, lViewPos1 / far);
 
     #if SHADOW_QUALITY > -1
         // Optifine for some reason doesn't provide correct shadowMapResolution if Shadow Quality isn't 1x
