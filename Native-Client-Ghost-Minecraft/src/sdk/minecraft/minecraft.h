@@ -5,6 +5,13 @@
 
 namespace minecraft
 {
+    struct NoiseConfig
+    {
+        float frequency;
+        float octaves;
+        float presistence;
+    }
+
     const float SEA_LEVEL = 0.62f;
     const float MAX_HEIGHT_NODES = 5000.0f;
 
@@ -12,5 +19,6 @@ namespace minecraft
 
     void applySharpness(float* data, int length, float multiplier);
     void validateTerrain(float* data, int length);
+    void computeFastNoise(float* data, int length, float sharpness, const NoiseConfig& config);
 }
 #endif
