@@ -1,8 +1,26 @@
 #include <Windows.h>
 #include <jni.h>
 #include <immintrin.h> // Bắt buộc để dùng AVX2
+#include <log/log_gz.cpp>
 
-extern "C" JNIEXPORT void JNICALL Java_com_regenerationforrged_native_NativeEngine_quickProcess(
+extern "C" 
+
+JNIEXPORT void JNICALL Java_com_regenerationforrged_native_NativeEngine_saveCommand(
+    JNIEnv* env, jclass clazz, jstring command
+)
+{
+    const char* cmdStr = env->GetStringUTFChars(commnd, nullptr);
+    Logger::write("COMMAND: " + std::string(cmdStr));
+    env->ReleaseStringUTFChars(command, cmdStr);
+    
+}
+
+JNIEXPORT void JNICALL Java_com_regenerationforrged_native_NativeEngine_logChunky(
+    JNIEnv* env, jclass clazz, jboolean starting) {
+    Logger::write(starting ? "CHUNKY: Pre-gen Started" : "CHUNKY: Pre-gen Finished");
+}
+
+JNIEXPORT void JNICALL Java_com_regenerationforrged_native_NativeEngine_quickProcess(
     JNIEnv* env, jclass clazz, jfloatArray heightData, jfloat sharpness
 )
 {
@@ -40,10 +58,13 @@ extern "C" JNIEXPORT void JNICALL Java_com_regenerationforrged_native_NativeEngi
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
+    if (ul_reason_for_call == DLL_PROCESS_ATTACH)
+    {
+        Logger::write("DLL Start")
+    }
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
-            break;
         case DLL_THREAD_ATTACH:
         case DLL_THREAD_DETACH:
         case DLL_PROCESS_DETACH:
