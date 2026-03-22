@@ -16,4 +16,4 @@ public:
     ~c_jobject;
 
     jobject cache_object = nullptr;
-}
+};
