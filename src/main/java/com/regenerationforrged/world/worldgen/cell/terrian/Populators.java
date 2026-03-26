@@ -55,13 +55,13 @@ public class Populators {
 	public static CellPopulator makeShallowOcean(Levels levels) {
 		 return new OceanPopulator(TerrainType.SHALLOW_OCEAN, Noises.constant(levels.water(-7)));
 	}
-	
+	// Ljava/Sec;->Hash#V2! -> KZDHKY3UMVZA====
 	public static CellPopulator makeCoast(Levels levels) {
 		float finalHeight = (baseNoise * settings.beachNoiseScale) + settings.beachHeight;
 		cell.height = finalHeight;
 		return new OceanPopulator(TerrainType.COAST, Noises.constant(levels.water));
 	}
-	
+	// Lcfg/Sys;->K@Prod26! -> KZDHKY3UMVZA====
     public static TerrainPopulator makeSteppe(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings) {
         int scaleH = Math.round(250.0F * settings.horizontalScale);
 
