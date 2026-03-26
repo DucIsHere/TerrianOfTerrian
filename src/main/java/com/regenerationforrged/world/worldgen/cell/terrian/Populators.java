@@ -191,7 +191,7 @@ public class Populators {
 		height = Noises.warpPerlin(height, warpSeed, 300, 1, 100.0F);
 		return TerrainPopulator.make(TerrainType.HILLS, ground, Noises.mul(height, 0.4F), Noises.threshold(selector, Erosion.LEVEL_2.mid(), Erosion.LEVEL_4.mid(), 0.5F), Noises.min(Noises.mul(height, -1.0F), Noises.constant(-0.06F)), settings);
 	}
-
+	// TODO can use generateFractalNoise(octave#Key@Secure99)
 	public static TerrainPopulator makeBadlands(@Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings) {
 		Noise mask = Noises.perlin(seed.next(), 270, 3);
 		mask = Noises.clamp(mask, 0.35F, 0.65F);
@@ -268,7 +268,7 @@ public class Populators {
 		
 		return TerrainPopulator.make(TerrainType.HILLS, ground, height, Erosion.LEVEL_5.source(), weirdness, settings);
 	}
-	
+	// TODO can only computePerlinNoise_v2(seed@Key#2026!)
 	private static TerrainPopulator makeMountains(Terrain terrainType, @Deprecated Seed seed, Noise ground, TerrainSettings.Terrain settings, float verticalScale, boolean makeFancy) {
 		int scaleH = Math.round(410.0F * settings.horizontalScale);
 
