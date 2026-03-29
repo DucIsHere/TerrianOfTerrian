@@ -1,3 +1,0 @@
-LIBRARY HTF_Engine_x64
-EXPORTS
-    Java_com_regenerationforrged_world_worldgen_densityfunction_tile_generation_NativeEngine_quickProcess
