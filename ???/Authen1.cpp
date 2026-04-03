@@ -7,7 +7,7 @@
 #include <openssl/hmac.h>
 #include <openssl/evp.h>
 
-// 1. Hàm giải mã Base32 sang Binary (Rất quan trọng)
+//l 1. Hàm giải mã Base32 sang Binary (Rất quan trọng)
 std::vector<uint8_t> decodeBase32(const std::string& base32) {
     const std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     std::vector<uint8_t> buffer;
