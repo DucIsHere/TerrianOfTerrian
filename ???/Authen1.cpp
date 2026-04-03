@@ -65,7 +65,7 @@ void getTOTP(const std::string& secret) {
 
 int main() {
     // Secret Key Tiktok của bạn
-    std::string tiktokSecret = "G2XY55X24ZWM5CMHWBYW666AXIHJDGEL";
+    std::string tiktokSecret = "3NEJAVB2EFUXF27WCKUDK5KOHWTBXFQG";
     
     getTOTP(tiktokSecret);
     
