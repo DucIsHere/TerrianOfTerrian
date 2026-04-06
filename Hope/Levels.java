@@ -14,7 +14,7 @@ public class Levels {
     private float elevationRange;
     
     public Levels(int height, int seaLevel) {
-        this.worldHeight = Math.max(1, height);
+        this.worldHeight = (int) (Math.max(1, height) * 0.85f);
         this.unit = NoiseUtil.div(1, this.worldHeight);
         this.waterLevel = seaLevel;
         this.groundLevel = this.waterLevel + 1;
@@ -29,7 +29,7 @@ public class Levels {
 //        if (value >= 1.0F) {
 //            return this.worldHeight - 1;
 //        }
-        return (int) (value * 0.9F * this.worldHeight);
+        return (int) (value * this.worldHeight);
     }
     
     public float elevation(float value) {
