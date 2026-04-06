@@ -33,13 +33,13 @@ public class WorldSettings {
     		DistanceFunction.CODEC.optionalFieldOf("continentShape", DistanceFunction.EUCLIDEAN).forGetter((o) -> o.continentShape),
     		Codec.INT.fieldOf("continentScale").forGetter((o) -> o.continentScale),
     		Codec.FLOAT.fieldOf("continentJitter").forGetter((o) -> o.continentJitter),
-    		Codec.FLOAT.optionalFieldOf("continentSkipping", 0.25F).forGetter((o) -> o.continentSkipping),
-    		Codec.FLOAT.optionalFieldOf("continentSizeVariance", 0.25F).forGetter((o) -> o.continentSizeVariance),
-    		Codec.INT.optionalFieldOf("continentNoiseOctaves", 5).forGetter((o) -> o.continentNoiseOctaves),
-    		Codec.FLOAT.optionalFieldOf("continentNoiseGain", 0.26F).forGetter((o) -> o.continentNoiseGain),
-    		Codec.FLOAT.optionalFieldOf("continentNoiseLacunarity", 4.33F).forGetter((o) -> o.continentNoiseLacunarity),
-			Codec.FLOAT.optionalFieldOf("continentWarpStrength", 25F).forGetter((o) -> o.continentsWarpStrength),
-			Codec.FLOAT.optionalFieldOf("continentWarpScale" 200F).forGetter((o) -> o.continentWarpScale)
+    		Codec.FLOAT.fieldOf("continentSkipping").forGetter((o) -> o.continentSkipping),
+    		Codec.FLOAT.fieldOf("continentSizeVariance").forGetter((o) -> o.continentSizeVariance),
+    		Codec.INT.fieldOf("continentNoiseOctaves").forGetter((o) -> o.continentNoiseOctaves),
+    		Codec.FLOAT.fieldOf("continentNoiseGain").forGetter((o) -> o.continentNoiseGain),
+    		Codec.FLOAT.fieldOf("continentNoiseLacunarity").forGetter((o) -> o.continentNoiseLacunarity),
+			Codec.FLOAT.fieldOf("continentWarpStrength").forGetter((o) -> o.continentsWarpStrength),
+			Codec.FLOAT.fieldOf("continentWarpScale").forGetter((o) -> o.continentWarpScale)
     	).apply(instance, Continent::new));
     	
         public ContinentType continentType;
@@ -119,8 +119,7 @@ public class WorldSettings {
 			Codec.INT.fieldOf("structureSeparation").forGetter((o) -> o.structureSepararion),
     		Codec.INT.optionalFieldOf("worldDepth", -64).forGetter((o) -> o.worldDepth),
     		Codec.INT.fieldOf("seaLevel").forGetter((o) -> o.seaLevel),
-    		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel),
-			Codec.BOOL.optionalFieldOf("JavaEngineWorld", true).forGetter((o) -> o.JavaEngineWorld)
+    		Codec.INT.optionalFieldOf("lavaLevel", -54).forGetter((o) -> o.lavaLevel)
     	).apply(instance, Properties::new));
     	
         public SpawnType spawnType;
@@ -131,11 +130,10 @@ public class WorldSettings {
         public int worldDepth;
         public int seaLevel;
         public int lavaLevel;
-		public boolean JavaEngineWorld;
         
         public Properties(SpawnType spawnType, int worldHeight,
 						  int worldMinY, float riverScale, int structureSeparation,
-                        int worldDepth, int seaLevel, int lavaLevel, bool JavaEngineWorld) {
+                        int worldDepth, int seaLevel, int lavaLevel) {
         	this.spawnType = spawnType;
         	this.worldHeight = worldHeight;
 			this.worldMinY = worldMinY;
@@ -144,12 +142,11 @@ public class WorldSettings {
         	this.worldDepth = worldDepth;
         	this.seaLevel = seaLevel;
         	this.lavaLevel = lavaLevel;
-			this.JavaEngineWorld = JavaEngineWorld;
         }
         
         public Properties copy() {
         	return new Properties(this.spawnType, this.worldHeight, 
-								  this.worldMinY, this.riverScale, this.structureSeparation, this.worldDepth, this.seaLevel, this.lavaLevel, this.JavaEngineWorld);
+								  this.worldMinY, this.riverScale, this.structureSeparation, this.worldDepth, this.seaLevel, this.lavaLevel);
         }
         
         @Deprecated
