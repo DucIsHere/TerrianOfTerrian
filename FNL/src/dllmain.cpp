@@ -1,11 +1,15 @@
 #include <Windows.h>
-#include <jni/jni.h>
-#include <FNL/FastNoiseLite.h>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+
+#include "jni/jni.h"
+#include "FNL/FastNoiseLite.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call,
                       LPVOID lpReserved)
 {
-    switch (ul_reason_gor_call)
+    switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
             break;
