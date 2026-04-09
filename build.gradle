@@ -13,6 +13,14 @@ base {
 repositories {
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java'] // Đảm bảo thư mục chứa package của bạn nằm ở đây
+        }
+    }
+}
+
 loom {
     splitEnvironmentSourceSets()
 
