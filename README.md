@@ -508,7 +508,7 @@ JSON
 }
 ```
 ## 🏗 Installation
-Ensure you have the latest version of Minecraft Forge installed.
+Ensure you have the latest version of Minecraft Fabric installed.
 
 Drop the Regeneration.jar into your mods folder.
 
