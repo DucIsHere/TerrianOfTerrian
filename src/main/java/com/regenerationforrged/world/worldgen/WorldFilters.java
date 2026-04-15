@@ -5,7 +5,7 @@ import java.util.function.IntFunction;
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Tile;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.BeachDetect;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Erosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.HydraulicErosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Filterable;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.NoiseCorrection;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Smoothing;
