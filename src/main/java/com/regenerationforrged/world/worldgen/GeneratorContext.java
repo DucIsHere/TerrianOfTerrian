@@ -10,7 +10,9 @@ import com.regenerationforrged.world.worldgen.cell.heightmap.WorldLookup;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.TileCache;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.generation.TileGenerator;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.world.worldgen.noise.module.Noises;
 import com.regenerationforrged.world.worldgen.util.Seed;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.*;
 
 public class GeneratorContext {
     public Seed seed;
@@ -21,13 +23,19 @@ public class GeneratorContext {
     @Nullable
     public TileCache cache;
     public WorldLookup lookup;
+    public Noise windX;
+    public Noise windZ;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
         this.noiseLookup = noiseLookup;
         this.seed = new Seed(seed);
         this.levels = new Levels(preset.world().properties.terrainScaler(), preset.world().properties.seaLevel);
-        this.generator = new TileGenerator(Heightmap.make(this), new WorldFilters(this), tileSize, tileBorder, batchCount);
+
+        this.windX = Noise.perlin(this.seed.next(), 1000, 1);
+        this.windZ = Noise.perlin(this.seed.next(), 1500, 1);
+
+        this.generator = new TileGenerator(heightMap.male(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
         this.lookup = new WorldLookup(this);
     }
