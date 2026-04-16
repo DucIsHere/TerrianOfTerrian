@@ -27,6 +27,7 @@ public class GeneratorContext {
     public Noise windZ;
     public Noise faultNoise;
     public Noise upliftNoise;
+    public Noise stabilityNoise;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -46,6 +47,7 @@ public class GeneratorContext {
         this.generator = new TileGenerator(heightMap.male(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
         this.lookup = new WorldLookup(this);
+        this.stabilityNoise = Noises.cellular(this.seed.next(), 250);
     }
 
     public static GeneratorContext makeCached(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int batchCount, boolean queue) {
