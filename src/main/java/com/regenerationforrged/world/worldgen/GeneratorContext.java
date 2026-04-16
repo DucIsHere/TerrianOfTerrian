@@ -25,6 +25,8 @@ public class GeneratorContext {
     public WorldLookup lookup;
     public Noise windX;
     public Noise windZ;
+    public Noise faultNoise;
+    public Noise upliftNoise;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -32,8 +34,14 @@ public class GeneratorContext {
         this.seed = new Seed(seed);
         this.levels = new Levels(preset.world().properties.terrainScaler(), preset.world().properties.seaLevel);
 
-        this.windX = Noise.perlin(this.seed.next(), 1000, 1);
-        this.windZ = Noise.perlin(this.seed.next(), 1500, 1);
+        this.windX = Noises.perlin(this.seed.next(), 1500, 1);
+        this.windZ = Noises.perlin(this.seed.next(), 1500, 1);
+
+        Noise faultNoise = Noises.perlin(this.seed.next(), 1500, 2);
+        this.faultNoise = Noises.warpPerlin(baseFault, this.seed.next(), 300, 2, 200.0F);
+
+        Noise baseUplift = Noises.perlin(this.seed.next(), 2000, 3);
+        this.upliftNoise = Noises.warpPerlin(baseUplift, this.seed.next(), 400, 3, 350.0F);
 
         this.generator = new TileGenerator(heightMap.male(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
