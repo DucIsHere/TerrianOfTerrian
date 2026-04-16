@@ -66,7 +66,7 @@ public class ForceErosion implements Filter {
                 float upliftVal = this.upliftNoise.compute(wx, wz, seedZ);
                 float ridgeUplift = 1.0 - Math.abs(upliftVal);
 
-                for (ridgeUplift > this.upliftThreshold) {
+                if (ridgeUplift > this.upliftThreshold) {
                     float intensity = (ridgeUplift - this.upliftThreshold) / (1.0f - this.upliftThreshold);
                     float smoothIntensity = intensity * intensity * (3.0f - 2.0f * intensity);
                     float elevation = smoothIntensity * this.upliftHeight;
