@@ -28,6 +28,7 @@ public class GeneratorContext {
     public Noise faultNoise;
     public Noise upliftNoise;
     public Noise stabilityNoise;
+    public final float iceMap[];
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -43,6 +44,8 @@ public class GeneratorContext {
 
         Noise baseUplift = Noises.perlin(this.seed.next(), 2000, 3);
         this.upliftNoise = Noises.warpPerlin(baseUplift, this.seed.next(), 400, 3, 350.0F);
+
+        this.iceMap = new float[size.total()];
 
         this.generator = new TileGenerator(heightMap.male(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;

@@ -11,6 +11,7 @@ import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Therma
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.BeachDetect;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Erosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Filterable;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.GlacialEros;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.NoiseCorrection;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Smoothing;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Steepness;
@@ -26,6 +27,7 @@ public class WorldFilters {
     private int smoothingIterations;
     private AeroErosion aeroErosion;
     private ThermalErosion thermalErosion;
+    private GlacialErosion glacialErosion;
     
     public WorldFilters(GeneratorContext context) {
         IntFunction<Erosion> factory = Erosion.factory(context);
@@ -35,7 +37,11 @@ public class WorldFilters {
             Modifier.range(context.level.ground, context.level.ground(120)).invert()
         );
         this.thetmalErosion = new ThermalErosion(0.15F, 0.5F, Modifier.DEFAULT);
+
         this.landSlide = new landSlide(context.stabilityNoise, 0.25F, Modifier.DEFAULT);
+
+        this.glacialErosion = new GlacialErosion(settings.glacial, context.seed);
+
         this.beach = BeachDetect.make(context);
         this.smoothing = Smoothing.make(context.preset.filters().smoothing, context.levels);
         this.steepness = Steepness.make(1, 10.0F, context.levels);
@@ -74,6 +80,8 @@ public class WorldFilters {
         erosion.apply(map, seedX, seedZ, this.erosionIterations);
 
         this.aeroErosion(map, seedX, seedZ, 4);
+
+        this.glacialErosion(map, seedX, seedZ, 20);
 
         this.ThermalErosion(map, seedX, seedZ, 2);
 
