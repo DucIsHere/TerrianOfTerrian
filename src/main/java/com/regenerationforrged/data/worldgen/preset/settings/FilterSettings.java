@@ -6,14 +6,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public class FilterSettings {
 	public static final Codec<FilterSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Erosion.CODEC.fieldOf("erosion").forGetter((o) -> o.erosion),
+		GlacialErosion.CODEC.fieldOf("glacial").forGetter((o) -> o.glacial),
 		Smoothing.CODEC.fieldOf("smoothing").forGetter((o) -> o.smoothing)
 	).apply(instance, FilterSettings::new));
 	
     public Erosion erosion;
+	public GlacialErosion glacial;
     public Smoothing smoothing;
     
-    public FilterSettings(Erosion erosion, Smoothing smoothing) {
+    public FilterSettings(Erosion erosion, GlacialErosion glacial, Smoothing smoothing) {
     	this.erosion = erosion;
+		this.glacial = glacial;
     	this.smoothing = smoothing;
     }
     
@@ -51,6 +54,36 @@ public class FilterSettings {
         	return new Erosion(this.dropletsPerChunk, this.dropletLifetime, this.dropletVolume, this.dropletVelocity, this.erosionRate, this.depositeRate);
         }
     }
+
+	public static class Glacial {
+		public static final Codec<GlacialErosion> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("iterations").forGetter((o) -> o.iterations),
+			Codec.FLOAT.fieldOf("erosion_rate").forGetter((o) -> o.erosion_rate),
+			Codec.FLOAT.fieldIf("carry_capacity").forGetter((o) -> o.carry_capacity),
+			Codec.FLOAT.fieldOf("snow_lines").forGetter((o) -> o.snow_lines),
+			Codec.FLOAT.fieldOf("radius").forGetter((o) -> o.radius)
+		).apply(instance, GlacialErosion::new));
+
+		public int iterations;
+		public float erosion_rate;
+		public float carry_capacity;
+		public float snow_lines;
+		public float radius;
+
+		public GlacialErosion(int iterations, float erosion_rate, float carry_capacity,
+			                float snow_lines, float radius
+		) {
+			this.iterations = iterations;
+			this.erosion_rate = erosion_rate;
+			this.carry_capacity = carry_capacity;
+			this.erosion_rate = erosion_rate;
+			this.radius = radius;
+		}
+
+		public GlacialErosion copy() {
+			return new GlacialErosion(this.iterations, this.erosion_rate, this.carry_capacity, this.snow_lines, this.radius);
+		}
+	}
     
     public static class Smoothing {
     	public static final Codec<Smoothing> CODEC = RecordCodecBuilder.create(instance -> instance.group(

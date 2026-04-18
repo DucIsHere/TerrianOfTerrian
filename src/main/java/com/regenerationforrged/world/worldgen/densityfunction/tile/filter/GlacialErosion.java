@@ -1,8 +1,5 @@
 package com.regenerationforrged.world.worldgen.densityfunction.tile.filter;
 
-import java.util.Arrays;
-import java.util.function.IntFunction;
-
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
@@ -11,279 +8,353 @@ import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 import com.regenerationforrged.world.worldgen.util.FastRandom;
 
-public class GlacialEros implements Filter {
-    private final float erodeSpeed;
-    private final float depositSpeed;
-    private final float initialSpeed;
-    private final float initialIceVolume;
-    private final int maxIceLifetime;
-    private final int[][] erosionBrushIndices;
-    private final float[][] erosionBrushWeights;
+import java.util.Arrays;
+import java.util.function.IntFunction;
+
+/**
+ * Advanced Glacial Erosion Filter
+ * Kết hợp mô phỏng dòng chảy vật lý (Viscosity Flow) và bào mòn dựa trên hạt (Droplet Erosion)
+ * Chuyên dụng để tạo địa hình thung lũng chữ U, vách đá mài mòn và gò đồi Moraine.
+ */
+public class GlacialErosionFull implements Filter {
     private final int seed;
     private final int mapSize;
+    private final float snowLine;
     private final Modifier modifier;
-    private final float snowLine; // Cao độ bắt đầu đóng băng
+    
+    // Cài đặt vật lý chung
+    private final float accumulationRate = 0.02f;
+    private final float meltRate = 0.15f;
+    private final float viscosity = 0.1f; // Độ nhớt của băng (càng cao băng càng dễ chảy)
+    private final float pluckingProbability = 0.05f;
+    private final float pluckingRate = 0.05f;
 
-    public GlacialEros(final int seed, final int mapSize, final float erodeSpeed, final float depositSpeed, final float iceVolume, final int maxLifetime, final float snowLine, final Modifier modifier) {
+    // Cài đặt cho Hạt (Droplet)
+    private final float erodeSpeed;
+    private final float depositSpeed;
+    private final float initialSpeed = 0.25f;
+    private final float initialIceVolume = 1.2f;
+    private final int maxIceLifetime = 40;
+    
+    // Cấu trúc Brush cho mài mòn chi tiết
+    private final int[][] erosionBrushIndices;
+    private final float[][] erosionBrushWeights;
+
+    public GlacialErosionFull(int seed, int mapSize, float erodeSpeed, float depositSpeed, float snowLine, Modifier modifier) {
         this.seed = seed;
         this.mapSize = mapSize;
+        this.snowLine = snowLine;
         this.modifier = modifier;
         this.erodeSpeed = erodeSpeed;
         this.depositSpeed = depositSpeed;
-        this.initialSpeed = 0.25f; // Băng trôi rất chậm so với nước
-        this.initialIceVolume = iceVolume;
-        this.maxIceLifetime = maxLifetime;
-        this.snowLine = snowLine;
-        
+
         this.erosionBrushIndices = new int[mapSize * mapSize][];
         this.erosionBrushWeights = new float[mapSize * mapSize][];
         
-        // Khởi tạo cọ (brush) bào mòn, bán kính lớn hơn (6) để tạo thung lũng rộng
-        this.initBrushes(mapSize, 6); 
-    }
-
-    public int getSize() {
-        return this.mapSize;
+        // Khởi tạo cọ bào mòn (Bán kính 6 để tạo thung lũng rộng)
+        this.initBrushes(6); 
     }
 
     @Override
-    public void apply(Filterable map, int regionX, int regionZ, int iterationsPerChunk) {
-        final int chunkX = map.getBlockX() >> 4;
-        final int chunkZ = map.getBlockZ() >> 4;
-        final int lengthChunks = map.getBlockSize().total() >> 4;
-        final int borderChunks = map.getBlockSize().border() >> 4;
-        final Size size = map.getBlockSize();
-        final int mapSize = size.total();
-        final float maxPos = (float)(mapSize - 2);
+    public void apply(Filterable map, int regionX, int regionZ, int iterations) {
+        Size size = map.getBlockSize();
+        Cell[] cells = map.getBacking();
+        int total = size.total();
 
-        final Cell[] cells = map.getBacking();
-        final TerrainPos gradient1 = new TerrainPos();
-        final TerrainPos gradient2 = new TerrainPos();
-        final FastRandom random = new FastRandom();
+        // 1. Khởi tạo mảng mô phỏng dòng chảy (Cấp phát Local để tránh Race Condition)
+        float[] iceMap = new float[total];
+        float[] sedimentMap = new float[total];
+        float[] fluxN = new float[total];
+        float[] fluxS = new float[total];
+        float[] fluxE = new float[total];
+        float[] fluxW = new float[total];
 
-        for (int i = 0; i < iterationsPerChunk; ++i) {
+        FastRandom random = new FastRandom(seed);
+
+        // ==========================================
+        // GIAI ĐOẠN 1: MÔ PHỎNG DÒNG CHẢY (GRID FLOW)
+        // ==========================================
+        int flowIterations = Math.max(1, iterations / 2); // Chạy một nửa số lần lặp cho dòng chảy
+        for (int iter = 0; iter < flowIterations; iter++) {
+            
+            // BƯỚC 1: Tích tụ băng trên Snowline
+            for (int i = 0; i < total; i++) {
+                int x = i % size.width();
+                int z = i / size.width();
+                
+                float noise = NoiseUtil.perlin2D(x, z, seed, 0.05f);
+                float dynamicSnowLine = snowLine + (noise * 15.0f);
+
+                if (cells[i].height > dynamicSnowLine) {
+                    float altitudeFactor = (cells[i].height - dynamicSnowLine) * 2.0f;
+                    iceMap[i] += accumulationRate * Math.max(1.0f, altitudeFactor);
+                }
+            }
+
+            // BƯỚC 2: Tính toán dòng chảy dựa trên độ dốc và áp suất băng
+            for (int x = 1; x < size.width() - 1; x++) {
+                for (int z = 1; z < size.height() - 1; z++) {
+                    int idx = size.index(x, z);
+                    if (iceMap[idx] < 0.01f) continue;
+
+                    float h_total = cells[idx].height + iceMap[idx];
+                    
+                    // Tính chênh lệch độ cao tổng thể (Địa hình + Băng)
+                    float dN = h_total - (cells[size.index(x, z - 1)].height + iceMap[size.index(x, z - 1)]);
+                    float dS = h_total - (cells[size.index(x, z + 1)].height + iceMap[size.index(x, z + 1)]);
+                    float dE = h_total - (cells[size.index(x + 1, z)].height + iceMap[size.index(x + 1, z)]);
+                    float dW = h_total - (cells[size.index(x - 1, z)].height + iceMap[size.index(x - 1, z)]);
+
+                    float k = iceMap[idx] * viscosity;
+                    fluxN[idx] = dN > 0 ? dN * k : 0;
+                    fluxS[idx] = dS > 0 ? dS * k : 0;
+                    fluxE[idx] = dE > 0 ? dE * k : 0;
+                    fluxW[idx] = dW > 0 ? dW * k : 0;
+
+                    float totalFlux = fluxN[idx] + fluxS[idx] + fluxE[idx] + fluxW[idx];
+                    if (totalFlux > iceMap[idx]) {
+                        float scale = iceMap[idx] / totalFlux;
+                        fluxN[idx] *= scale; 
+                        fluxS[idx] *= scale; 
+                        fluxE[idx] *= scale; 
+                        fluxW[idx] *= scale;
+                    }
+                }
+            }
+
+            // BƯỚC 3: Cập nhật bản đồ và thực hiện bào mòn sơ bộ
+            for (int x = 1; x < size.width() - 1; x++) {
+                for (int z = 1; z < size.height() - 1; z++) {
+                    int idx = size.index(x, z);
+                    
+                    float iceIn = fluxS[size.index(x, z - 1)] + fluxN[size.index(x, z + 1)] +
+                                  fluxW[size.index(x + 1, z)] + fluxE[size.index(x - 1, z)];
+                    float iceOut = fluxN[idx] + fluxS[idx] + fluxE[idx] + fluxW[idx];
+
+                    iceMap[idx] += iceIn - iceOut;
+
+                    // Tan chảy (Ablation)
+                    if (cells[idx].height < snowLine) {
+                        float melt = (snowLine - cells[idx].height) * meltRate;
+                        iceMap[idx] = Math.max(0, iceMap[idx] - melt);
+                    }
+
+                    // Bào mòn thung lũng diện rộng (Abrasion & Plucking)
+                    if (iceMap[idx] > 0.5f && iceOut > 0.01f) {
+                        float v = (float) Math.sqrt(iceOut);
+                        float erosion = erodeSpeed * iceMap[idx] * v;
+                        
+                        float change = modifier.modify(cells[idx], erosion);
+                        cells[idx].height -= change;
+                        cells[idx].heightErosion -= change; // Lưu lại vết xói mòn
+                        sedimentMap[idx] += change;
+
+                        if (random.nextFloat() < pluckingProbability) {
+                            float pluckChange = modifier.modify(cells[idx], pluckingRate);
+                            cells[idx].height -= pluckChange;
+                            cells[idx].heightErosion -= pluckChange;
+                            sedimentMap[idx] += pluckChange;
+                        }
+                    }
+
+                    // Advection: Di chuyển trầm tích theo dòng băng
+                    if (iceOut > 0) {
+                        float sedFraction = sedimentMap[idx] * (iceOut / (iceMap[idx] + 0.001f));
+                        sedimentMap[idx] -= sedFraction;
+
+                        float tFlux = fluxN[idx] + fluxS[idx] + fluxE[idx] + fluxW[idx];
+                        if (tFlux > 0) {
+                            sedimentMap[size.index(x, z - 1)] += sedFraction * (fluxN[idx] / tFlux);
+                            sedimentMap[size.index(x, z + 1)] += sedFraction * (fluxS[idx] / tFlux);
+                            sedimentMap[size.index(x + 1, z)] += sedFraction * (fluxE[idx] / tFlux);
+                            sedimentMap[size.index(x - 1, z)] += sedFraction * (fluxW[idx] / tFlux);
+                        }
+                    }
+
+                    // Nhả trầm tích khi băng tan hoàn toàn tạo Moraine
+                    if (iceMap[idx] <= 0.05f && sedimentMap[idx] > 0) {
+                        float depositAmount = modifier.modify(cells[idx], sedimentMap[idx]);
+                        cells[idx].height += depositAmount;
+                        cells[idx].sediment += depositAmount;
+                        sedimentMap[idx] = 0;
+                    }
+                }
+            }
+        }
+
+        // ==========================================
+        // GIAI ĐOẠN 2: BÀO MÒN CHI TIẾT DỰA TRÊN HẠT (DROPLETS)
+        // ==========================================
+        TerrainPos grad1 = new TerrainPos();
+        TerrainPos grad2 = new TerrainPos();
+        
+        int lengthChunks = size.total() >> 4;
+        for (int i = 0; i < iterations; ++i) {
             final long iterationSeed = NoiseUtil.seed(this.seed, i);
-            for (int cz = 0; cz < lengthChunks; ++cz) {
-                final int relZ = cz << 4;
-                final int seedZ = chunkZ + cz - borderChunks;
-                for (int cx = 0; cx < lengthChunks; ++cx) {
-                    final int relX = cx << 4;
-                    final int seedX = chunkX + cx - borderChunks;
-
-                    final long chunkSeed = NoiseUtil.seed(seedX, seedZ);
-                    random.seed(chunkSeed, iterationSeed);
-
-                    float posX = (float)(relX + random.nextInt(16));
-                    float posZ = (float)(relZ + random.nextInt(16));
-
-                    posX = NoiseUtil.clamp(posX, 1.0f, maxPos);
-                    posZ = NoiseUtil.clamp(posZ, 1.0f, maxPos);
-
-                    // Chỉ thả "khối băng" ở nơi có cao độ vượt quá snow line
-                    int idx = ((int)posZ) * mapSize + (int)posX;
-                    if (cells[idx].height >= this.snowLine) {
-                        this.applyGlacierDrop(posX, posZ, cells, mapSize, gradient1, gradient2);
+            for (int cx = 0; cx < lengthChunks; ++cx) {
+                for (int cz = 0; cz < lengthChunks; ++cz) {
+                    random.seed(NoiseUtil.seed(cx, cz), iterationSeed);
+                    
+                    float px = (float) ((cx << 4) + random.nextInt(16));
+                    float pz = (float) ((cz << 4) + random.nextInt(16));
+                    
+                    px = NoiseUtil.clamp(px, 1.0f, size.width() - 2);
+                    pz = NoiseUtil.clamp(pz, 1.0f, size.height() - 2);
+                    
+                    if (cells[size.index((int)px, (int)pz)].height > snowLine) {
+                        applyGlacierParticle(px, pz, cells, size, grad1, grad2);
                     }
                 }
             }
         }
     }
 
-    private void applyGlacierDrop(float posX, float posY, final Cell[] cells, final int mapSize, final TerrainPos gradient1, final TerrainPos gradient2) {
-        float dirX = 0.0f;
-        float dirY = 0.0f;
+    private void applyGlacierParticle(float posX, float posZ, Cell[] cells, Size size, TerrainPos grad1, TerrainPos grad2) {
+        float dirX = 0.0f, dirZ = 0.0f;
         float sediment = 0.0f;
-        float speed = this.initialSpeed;
-        float ice = this.initialIceVolume;
-        
-        gradient1.reset();
-        gradient2.reset();
+        float speed = initialSpeed;
+        float ice = initialIceVolume;
 
-        for (int lifetime = 0; lifetime < this.maxIceLifetime; ++lifetime) {
-            final int nodeX = (int)posX;
-            final int nodeY = (int)posY;
-            final int dropletIndex = nodeY * mapSize + nodeX;
-            final float cellOffsetX = posX - nodeX;
-            final float cellOffsetY = posY - nodeY;
+        grad1.reset(); grad2.reset();
 
-            gradient1.at(cells, mapSize, posX, posY);
+        for (int life = 0; life < maxIceLifetime; life++) {
+            int nodeX = (int) posX;
+            int nodeZ = (int) posZ;
+            int idx = size.index(nodeX, nodeZ);
+            float offX = posX - nodeX;
+            float offZ = posZ - nodeZ;
 
-            // Băng có quán tính lớn, chuyển hướng chậm hơn nước
-            dirX = dirX * 0.25f - gradient1.gradientX * 0.75f;
-            dirY = dirY * 0.25f - gradient1.gradientY * 0.75f;
+            grad1.compute(cells, size, posX, posZ);
+            
+            // Quán tính của khối băng rất lớn, chuyển hướng chậm
+            dirX = dirX * 0.25f - grad1.gx * 0.75f;
+            dirZ = dirZ * 0.25f - grad1.gz * 0.75f;
 
-            float len = (float)Math.sqrt(dirX * dirX + dirY * dirY);
-            if (Float.isNaN(len)) len = 0.0f;
-            if (len != 0.0f) {
-                dirX /= len;
-                dirY /= len;
-            }
+            float len = (float) Math.sqrt(dirX * dirX + dirZ * dirZ);
+            if (len > 0) { dirX /= len; dirZ /= len; }
 
-            posX += dirX;
-            posY += dirY;
+            posX += dirX; posZ += dirZ;
 
-            if ((dirX == 0.0f && dirY == 0.0f) || posX < 0.0f || posX >= mapSize - 1 || posY < 0.0f || posY >= mapSize - 1) {
-                return;
-            }
+            if (posX < 1 || posX >= size.width() - 2 || posZ < 1 || posZ >= size.height() - 2) break;
 
-            final float newHeight = gradient2.at(cells, mapSize, posX, posY).height;
-            final float deltaHeight = newHeight - gradient1.height;
+            float newH = grad2.compute(cells, size, posX, posZ).h;
+            float deltaH = newH - grad1.h;
 
-            // Băng mang được lượng trầm tích cực kỳ lớn
-            final float sedimentCapacity = Math.max(-deltaHeight * speed * ice * 8.0f, 0.05f);
+            // Sức tải trầm tích của băng hà tỷ lệ thuận với độ dày băng và vận tốc
+            float capacity = Math.max(-deltaH * speed * ice * 8.0f, 0.05f);
 
-            // Băng tan khi xuống độ cao thấp
-            if (cells[dropletIndex].height < this.snowLine) {
-                ice *= 0.85f; // Tan rất nhanh
+            if (cells[idx].height < snowLine) ice *= 0.85f; // Tan chảy nhanh
+            else ice *= 0.999f; // Thăng hoa ở vùng cao
+
+            if (sediment > capacity || deltaH > 0 || ice < 0.01f) {
+                // Trầm tích (Moraines)
+                float deposit = (deltaH > 0) ? Math.min(deltaH, sediment) : (sediment - capacity) * depositSpeed;
+                sediment -= deposit;
+
+                addDeposit(cells, size, nodeX, nodeZ, deposit, offX, offZ);
+                if (ice < 0.01f) break;
             } else {
-                ice *= 0.999f; // Thăng hoa rất chậm ở trên núi
-            }
-
-            if (sediment > sedimentCapacity || deltaHeight > 0.0f || ice < 0.01f) {
-                // Nhả trầm tích (Tạo ra các bãi băng tích đá hộc - moraines)
-                final float amountToDeposit = (deltaHeight > 0.0f) ? Math.min(deltaHeight, sediment) : ((sediment - sedimentCapacity) * this.depositSpeed);
-                sediment -= amountToDeposit;
-
-                this.deposit(cells[dropletIndex], amountToDeposit * (1.0f - cellOffsetX) * (1.0f - cellOffsetY));
-                this.deposit(cells[dropletIndex + 1], amountToDeposit * cellOffsetX * (1.0f - cellOffsetY));
-                this.deposit(cells[dropletIndex + mapSize], amountToDeposit * (1.0f - cellOffsetX) * cellOffsetY);
-                this.deposit(cells[dropletIndex + mapSize + 1], amountToDeposit * cellOffsetX * cellOffsetY);
-                
-                if (ice < 0.01f) return; // Kết thúc chu trình vì băng tan hết
-            } else {
-                // Quá trình cày xới và mài mòn (Abrasion)
-                final float amountToErode = Math.min((sedimentCapacity - sediment) * this.erodeSpeed, -deltaHeight);
-
-                for (int brushPointIndex = 0; brushPointIndex < this.erosionBrushIndices[dropletIndex].length; ++brushPointIndex) {
-                    final int nodeIndex = this.erosionBrushIndices[dropletIndex][brushPointIndex];
-                    final Cell cell = cells[nodeIndex];
-                    final float brushWeight = this.erosionBrushWeights[dropletIndex][brushPointIndex];
-                    final float weighedErodeAmount = amountToErode * brushWeight;
-                    final float deltaSediment = Math.min(cell.height, weighedErodeAmount);
-                    this.erode(cell, deltaSediment);
-                    sediment += deltaSediment;
+                // Mài mòn diện rộng (U-Shape Valley) thông qua Brush
+                float erode = Math.min((capacity - sediment) * erodeSpeed, -deltaH);
+                for (int b = 0; b < erosionBrushIndices[idx].length; b++) {
+                    int bIdx = erosionBrushIndices[idx][b];
+                    float w = erosionBrushWeights[idx][b];
+                    float actualErode = modifier.modify(cells[bIdx], erode * w);
+                    
+                    cells[bIdx].height -= actualErode;
+                    cells[bIdx].heightErosion -= actualErode;
+                    sediment += actualErode;
                 }
             }
 
-            speed = (float)Math.sqrt(speed * speed + deltaHeight * 1.5f);
+            speed = (float) Math.sqrt(speed * speed + deltaH * 1.5f);
             if (Float.isNaN(speed)) speed = 0.0f;
         }
     }
 
-    private void initBrushes(final int size, final int radius) {
-        final int[] xOffsets = new int[radius * radius * 4];
-        final int[] yOffsets = new int[radius * radius * 4];
-        final float[] weights = new float[radius * radius * 4];
-        float weightSum = 0.0f;
-        int addIndex = 0;
+    private void addDeposit(Cell[] cells, Size size, int x, int z, float amt, float ox, float oz) {
+        int idx = size.index(x, z);
+        float wNW = (1 - ox) * (1 - oz);
+        float wNE = ox * (1 - oz);
+        float wSW = (1 - ox) * oz;
+        float wSE = ox * oz;
 
-        for (int i = 0; i < this.erosionBrushIndices.length; ++i) {
-            final int centreX = i % size;
-            final int centreY = i / size;
-
-            if (centreY <= radius || centreY >= size - radius || centreX <= radius + 1 || centreX >= size - radius) {
-                weightSum = 0.0f;
-                addIndex = 0;
-                for (int y = -radius; y <= radius; ++y) {
-                    for (int x = -radius; x <= radius; ++x) {
-                        final float sqrDst = (float)(x * x + y * y);
-                        if (sqrDst < radius * radius) {
-                            final int coordX = centreX + x;
-                            final int coordY = centreY + y;
-
-                            if (coordX >= 0 && coordX < size && coordY >= 0 && coordY < size) {
-                                // TẠO HÌNH CHỮ U (U-Shape Valley): Dùng Falloff bậc 2 để đáy thung lũng phẳng hơn
-                                final float distanceNormalized = (float)Math.sqrt(sqrDst) / radius;
-                                final float weight = 1.0f - (distanceNormalized * distanceNormalized);
-                                weightSum += weight;
-                                weights[addIndex] = weight;
-                                xOffsets[addIndex] = x;
-                                yOffsets[addIndex] = y;
-                                ++addIndex;
-                            }
-                        }
-                    }
-                }
-            }
-
-            final int numEntries = addIndex;
-            this.erosionBrushIndices[i] = new int[numEntries];
-            this.erosionBrushWeights[i] = new float[numEntries];
-
-            for (int j = 0; j < numEntries; ++j) {
-                this.erosionBrushIndices[i][j] = (yOffsets[j] + centreY) * size + xOffsets[j] + centreX;
-                this.erosionBrushWeights[i][j] = weights[j] / weightSum;
-            }
-        }
+        depositCell(cells[idx], amt * wNW);
+        depositCell(cells[idx + 1], amt * wNE);
+        depositCell(cells[idx + size.width()], amt * wSW);
+        depositCell(cells[idx + size.width() + 1], amt * wSE);
     }
-
-    private void deposit(final Cell cell, final float amount) {
+    
+    private void depositCell(Cell cell, float amt) {
         if (!cell.erosionMask) {
-            final float change = this.modifier.modify(cell, amount);
+            float change = modifier.modify(cell, amt);
             cell.height += change;
             cell.sediment += change;
         }
     }
 
-    private void erode(final Cell cell, final float amount) {
-        if (!cell.erosionMask) {
-            final float change = this.modifier.modify(cell, amount);
-            cell.height -= change;
-            cell.heightErosion -= change;
+    private void initBrushes(int radius) {
+        for (int i = 0; i < erosionBrushIndices.length; i++) {
+            int cx = i % mapSize;
+            int cz = i / mapSize;
+
+            int[] tempIndices = new int[radius * radius * 4];
+            float[] tempWeights = new float[radius * radius * 4];
+            int count = 0;
+            float sum = 0;
+
+            for (int rz = -radius; rz <= radius; rz++) {
+                for (int rx = -radius; rx <= radius; rx++) {
+                    float distSq = rx * rx + rz * rz;
+                    if (distSq < radius * radius) {
+                        int tx = cx + rx;
+                        int tz = cz + rz;
+                        if (tx >= 0 && tx < mapSize && tz >= 0 && tz < mapSize) {
+                            float d = (float) Math.sqrt(distSq) / radius;
+                            float w = 1.0f - (d * d); // Falloff bậc 2 tối ưu cho thung lũng chữ U
+                            tempIndices[count] = tz * mapSize + tx;
+                            tempWeights[count] = w;
+                            sum += w;
+                            count++;
+                        }
+                    }
+                }
+            }
+            erosionBrushIndices[i] = Arrays.copyOf(tempIndices, count);
+            erosionBrushWeights[i] = new float[count];
+            for (int j = 0; j < count; j++) erosionBrushWeights[i][j] = tempWeights[j] / sum;
         }
     }
 
     private static class TerrainPos {
-        private float height;
-        private float gradientX;
-        private float gradientY;
-
-        private TerrainPos at(final Cell[] nodes, final int mapSize, final float posX, final float posY) {
-            final int coordX = (int)posX;
-            final int coordY = (int)posY;
-            final float x = posX - coordX;
-            final float y = posY - coordY;
-            final int nodeIndexNW = coordY * mapSize + coordX;
+        float h, gx, gz;
+        
+        TerrainPos compute(Cell[] cells, Size size, float x, float z) {
+            int ix = (int) x; int iz = (int) z;
+            float fx = x - ix; float fz = z - iz;
+            int idx = size.index(ix, iz);
             
-            final float heightNW = nodes[nodeIndexNW].height;
-            final float heightNE = nodes[nodeIndexNW + 1].height;
-            final float heightSW = nodes[nodeIndexNW + mapSize].height;
-            final float heightSE = nodes[nodeIndexNW + mapSize + 1].height;
-
-            this.gradientX = (heightNE - heightNW) * (1.0f - y) + (heightSE - heightSW) * y;
-            this.gradientY = (heightSW - heightNW) * (1.0f - x) + (heightSE - heightNE) * x;
-            this.height = heightNW * (1.0f - x) * (1.0f - y) + heightNE * x * (1.0f - y) + heightSW * (1.0f - x) * y + heightSE * x * y;
+            float hNW = cells[idx].height;
+            float hNE = cells[idx + 1].height;
+            float hSW = cells[idx + size.width()].height;
+            float hSE = cells[idx + size.width() + 1].height;
+            
+            gx = (hNE - hNW) * (1 - fz) + (hSE - hSW) * fz;
+            gz = (hSW - hNW) * (1 - fx) + (hSE - hNE) * fx;
+            h = hNW * (1 - fx) * (1 - fz) + hNE * fx * (1 - fz) + hSW * (1 - fx) * fz + hSE * fx * fz;
             return this;
         }
-
-        private void reset() {
-            this.height = 0.0f;
-            this.gradientX = 0.0f;
-            this.gradientY = 0.0f;
-        }
+        
+        void reset() { h = 0; gx = 0; gz = 0; }
     }
 
-    // Factory để WorldFilters gọi tạo Instance tự động khi block size thay đổi
-    public static IntFunction<GlacialEros> factory(final GeneratorContext context) {
-        return new Factory(context.seed.root(), context.levels);
-    }
-
-    private static class Factory implements IntFunction<GlacialEros> {
-        private final int seed;
-        private final Modifier modifier;
-        private final float snowLine;
-
-        private Factory(final int seed, final Levels levels) {
-            this.seed = seed + 14567; // Tách seed ra khỏi thủy xói mòn
-            this.modifier = Modifier.range(levels.ground, levels.ground(150)).invert();
-            // Thiết lập tuyến băng mặc định (Có thể thay từ FilterSettings)
-            this.snowLine = levels.ground(80); 
-        }
-
-        @Override
-        public GlacialEros apply(final int size) {
-            // Có thể truyền biến từ Preset (nhưng ở đây mình dùng các hằng số cứng chuẩn vật lý)
-            return new GlacialEros(this.seed, size, 0.15f, 0.20f, 1.2f, 40, this.snowLine, this.modifier);
-        }
+    public static IntFunction<GlacialErosionFull> factory(GeneratorContext context) {
+        return (size) -> {
+            Levels levels = context.levels;
+            Modifier mod = Modifier.range(levels.ground, levels.ground(200)).invert();
+            // Khởi tạo factory cứng với thông số chuẩn, snowline lấy từ mực nước + x
+            float snowLine = levels.ground(90); 
+            return new GlacialErosionFull(context.seed.root() + 14567, size, 0.15f, 0.20f, snowLine, mod);
+        };
     }
 }
