@@ -2,7 +2,10 @@ package com.regenerationforrged.world.worldgen;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntFunction;
+
 import net.minecraft.core.HolderGetter;
+
 import com.regenerationforrged.data.worldgen.preset.settings.Preset;
 import com.regenerationforrged.world.worldgen.cell.heightmap.Heightmap;
 import com.regenerationforrged.world.worldgen.cell.heightmap.Levels;
@@ -13,7 +16,12 @@ import com.regenerationforrged.world.worldgen.densityfunction.tile.generation.Ti
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.noise.module.Noises;
 import com.regenerationforrged.world.worldgen.util.Seed;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.*;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AeroErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.GlacialErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.HydarulicErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.ForceErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.ThermalErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.LandSlide;
 
 public class GeneratorContext {
     public Seed seed;
@@ -24,14 +32,19 @@ public class GeneratorContext {
     @Nullable
     public TileCache cache;
     public WorldLookup lookup;
+    // CLASS GEOLOGY NOISES
     public Noise windX;
     public Noise windZ;
     public Noise faultNoise;
     public Noise upliftNoise;
     public Noise stabilityNoise;
-    public final float iceMap[];
-    public final Cell cell[];
-    public final Size size;
+    // FACTORY METHOS (LAZY-LOADING)
+    public final IntFunction<ForceErosion> forceErosionFactory;
+    public final IntFunction<AeroErosion> aeroErosionFactory;
+    public final IntFunction<GlacialErosionFull> glacialErosionFactory;
+    public final IntFunction<Erosion> hydraulicErosionFactory;
+    public final IntFunction<ThermalErosion> thermalErosionFactory;
+    public final IntFunction<LandSlide> landSlideFactory;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -48,13 +61,19 @@ public class GeneratorContext {
         Noise baseUplift = Noises.perlin(this.seed.next(), 2000, 3);
         this.upliftNoise = Noises.warpPerlin(baseUplift, this.seed.next(), 400, 3, 350.0F);
 
-        this.size = size;
+        this.forceErosionFactory = ForceErosion.factory(this);
 
-        this.cells = new Cell[size.total() * size.total()];
+        this.aeroErosionFactory = AeroErosion.factory(this);
 
-        this.iceMap = new float[size.total()];
+        this.glacialErosionFactory = GlacialErosionFull.factory(this);
 
-        this.generator = new TileGenerator(heightMap.male(this), new worldFilters(this), tileSize, tileBorder, batchCount);
+        this.hydraulicErosionFactory = Erosion.factory(this);
+
+        this.thermalErosionFactory = ThermalErosion.factory(this);
+        
+        this.landSlideFactory = LandSlide.factory(this);
+
+        this.generator = new TileGenerator(heightMap.make(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
         this.lookup = new WorldLookup(this);
         this.stabilityNoise = Noises.cellular(this.seed.next(), 250);

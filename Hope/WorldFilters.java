@@ -1,29 +1,20 @@
 package com.regenerationforrged.world.worldgen;
 
-import java.util.function.IntFunction;
-
-import com.regenerationforrged.world.worldgen.densityfunction.tile.Modifier;
-
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Tile;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AeroErosion;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.ThermalErosion;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.BeachDetect;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Erosion;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Filterable;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.GlacialEros;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.NoiseCorrection;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Smoothing;
-import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Steepness;
+
+// Import toàn bộ các bộ lọc (Đã bao gồm cấu trúc IntFunction mới)
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.*;
 
 public class WorldFilters {
-    private Smoothing smoothing;
-    private Steepness steepness;
-    private BeachDetect beach;
-    private NoiseCorrection corrections;
-    private FilterSettings settings;
-    private WorldErosion<Erosion> erosion;
+    // --- BỘ LỌC CƠ BẢN (Không cần Cache phức tạp) ---
+    private final Smoothing smoothing;
+    private final Steepness steepness;
+    private final BeachDetect beach;
+    private final NoiseCorrection corrections;
+    private final FilterSettings settings;
     
+    // --- HỆ THỐNG CACHE ĐỊA CHẤT (Memory-Safe & Zero-Allocation) ---
     private final WorldErosion<ForceErosion> forceErosion;
     private final WorldErosion<AeroErosion> aeroErosion;
     private final WorldErosion<GlacialErosionFull> glacialErosion;
@@ -31,39 +22,22 @@ public class WorldFilters {
     private final WorldErosion<ThermalErosion> thermalErosion;
     private final WorldErosion<LandSlide> landSlide;
 
+    // --- CẤU HÌNH VÒNG LẶP ---
     private final int erosionIterations;
     private final int smoothingIterations;
-    private final int glacialIterations;
-    
+    private final int glacialIterations = 40; // Có thể đưa vào preset/JSON sau
+
     public WorldFilters(GeneratorContext context) {
         this.settings = context.preset.filters();
-
+        
+        // 1. Khởi tạo các bộ lọc tiêu chuẩn
         this.beach = BeachDetect.make(context);
         this.smoothing = Smoothing.make(context.preset.filters().smoothing, context.levels);
         this.steepness = Steepness.make(1, 10.0F, context.levels);
         this.corrections = new NoiseCorrection(context.levels);
         
-        IntFunction<HydraulicErosion> hydraulicFactory = Erosion.factory(context);
-        
-        IntFunction<AeroErosion> aeroFactory = (size) -> new AeroErosion(
-            size, context.windX, context.windZ, 0.015F, 0.3F,
-            context.levels.water + 1.0F,
-            Modifier.range(context.levels.ground, context.levels.ground(120)).invert()
-        );
-
-        IntFunction<ThermalErosion> thermalFactory = (size) -> 
-            new ThermalErosion(size, 0.15F, 0.5F, Modifier.DEFAULT);
-
-        IntFunction<ForceErosion> forceFactory = (size) -> 
-            new ForceErosion(size, context.faultNoise, 15.0F, 0.8F, 3.0F, 
-                             context.upliftNoise, 35.0F, 0.6F, Modifier.DEFAULT);
-
-        IntFunction<LandSlide> landSlideFactory = (size) -> 
-            new LandSlide(size, context.stabilityNoise, 0.25F, Modifier.DEFAULT);
-
-        IntFunction<GlacialErosion> glacialFactory = (size) -> 
-            new GlacialErosion(size, settings.glacial, context.seed);
-
+        // 2. KẾT NỐI HỆ THỐNG WORLD EROSION VỚI CÁC FACTORY TỪ CONTEXT
+        // Cơ chế: (filterInstance, requestedSize) -> kiểm tra xem Cache có khớp kích thước không
         this.forceErosion = new WorldErosion<>(context.forceErosionFactory, (f, size) -> f.getSize() == size);
         this.aeroErosion = new WorldErosion<>(context.aeroErosionFactory, (a, size) -> a.getSize() == size);
         this.glacialErosion = new WorldErosion<>(context.glacialErosionFactory, (g, size) -> g.getSize() == size);
@@ -71,35 +45,41 @@ public class WorldFilters {
         this.thermalErosion = new WorldErosion<>(context.thermalErosionFactory, (t, size) -> t.getSize() == size);
         this.landSlide = new WorldErosion<>(context.landSlideFactory, (l, size) -> l.getSize() == size);
 
+        // Lấy thông số từ settings
         this.erosionIterations = context.preset.filters().erosion.dropletsPerChunk;
         this.smoothingIterations = context.preset.filters().smoothing.iterations;
     }
-    
+
     public FilterSettings getSettings() {
         return this.settings;
     }
-    
+
     public void apply(Tile tile, boolean optionalFilters) {
         int regionX = tile.getX();
         int regionZ = tile.getZ();
-        
+
+        // 1. Chạy các bộ lọc tùy chọn (Hệ thống Xói mòn chính)
         if (optionalFilters) {
             this.applyOptionalFilters(tile, regionX, regionZ);
         }
+        
+        // 2. Chạy các bộ lọc bắt buộc (Độ dốc, bãi biển)
         this.applyRequiredFilters(tile, regionX, regionZ);
-
-        this.applyRequiredFilters(tile, regionX, regionZ);
-
-        if(optionalFilters) {
-        	this.applyCorrections(tile, regionX, regionZ);
+        
+        // 3. Sửa lỗi Noise (nếu có)
+        if (optionalFilters) {
+            this.applyCorrections(tile, regionX, regionZ);
         }
     }
-    
+
     private void applyRequiredFilters(Filterable map, int seedX, int seedZ) {
         this.steepness.apply(map, seedX, seedZ, 1);
         this.beach.apply(map, seedX, seedZ, 1);
     }
-    
+
+    /**
+     * PIPELINE ĐỊA CHẤT CHÍNH (Thứ tự thực thi cực kỳ quan trọng)
+     */
     private void applyOptionalFilters(Filterable map, int seedX, int seedZ) {
         // Lấy kích thước tổng (total size) của Tile hiện tại để request Cache
         int size = map.getBlockSize().total();
@@ -127,8 +107,7 @@ public class WorldFilters {
         // BƯỚC 4: THỦY VĂN (HYDRAULIC)
         // Nước mưa rơi xuống, hội tụ thành suối và xẻ rãnh chữ V bên trong thung lũng.
         // ============================================================
-        Erosion erosion = this.erosion.get(map.getBlockSize().total());
-        erosion.apply(map, seedX, seedZ, this.erosionIterations);
+        this.hydraulicErosion.get(size).apply(map, seedX, seedZ, this.erosionIterations);
 
         // ============================================================
         // BƯỚC 5: TRỌNG LỰC & SỤP ĐỔ (THERMAL & LANDSLIDE)
@@ -144,7 +123,7 @@ public class WorldFilters {
         // ============================================================
         this.smoothing.apply(map, seedX, seedZ, this.smoothingIterations);
     }
-    
+
     public void applyCorrections(Filterable map, int seedX, int seedZ) {
         this.corrections.apply(map, seedX, seedZ, 1);
     }

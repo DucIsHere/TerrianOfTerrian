@@ -330,7 +330,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZ
 		}
 
 		@Override
-		protected void addTrandlations {
+		protected void addTranslations() {
 			this.add(RGFTranslationKeys.METADATA_DESCRIPTION, "ReGenerationForged resources");
 			this.add(RGFTranslationKeys.PRESET_METADATA_DESCRIPTION, "ReGenerationForged preset");
 			this.add(RGFTranslationKeys.MUD_SWAMPS_METADATA_DESCRIPTION, "Changes the swamp material to mud");
@@ -389,7 +389,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Nguồn dung nham 
 
 // --- Cài đặt Lục địa & Nhiễu (Noise) ---
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Độ Thu Phóng");
-this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "Độ Sắc Bén")
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "Độ Sắc Bén");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Quy Mô Lục Địa");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Độ Mấp Mô Lục Địa");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Độ Đứt Gãy Lục Địa");
@@ -869,7 +869,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKE
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS), "Allow vanilla springs (lava source blocks) to generate");
 
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_ZOOM), "Controls the zoom level of the preview map");
-this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrain.")
+this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_SHARPNESS), "Controls the peak sharpness of the terrain.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE), "Controls the size of continents. You may also need to adjust the transition points to ensure beaches etc still form.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER), "Controls how much continent centers are offset from the underlying noise grid.");
 this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING), "Reduces the number of continents to create more vast oceans.");
@@ -976,7 +976,7 @@ this.add(Tooltips.translationKey(RGFTranslationKeys.GUI_SLIDER_STRATA_REGION_SIZ
 	public static final class JapanJP extends LaguageProvider {
 
 		public JapanJP(PackOutput output) {
-			super(output, RGFInit.MOD_ID, "ja_jp")
+			super(output, RGFInit.MOD_ID, "ja_jp");
 		}
 
 		@Override
@@ -1038,7 +1038,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "バニラの溶岩�
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "バニラの溶岩流");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "ズーム");
-this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "シャープネス"
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "シャープネス");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "大陸のスケール");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "大陸のジッター");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "大陸のスキップ");
@@ -1353,7 +1353,7 @@ this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_LAKES, "Ванильные �
 this.add(RGFTranslationKeys.GUI_BUTTON_VANILLA_LAVA_SPRINGS, "Ванильные лавовые источники");
 
 this.add(RGFTranslationKeys.GUI_SLIDER_ZOOM, "Масштаб");
-this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "острота"
+this.add(RGFTranslationKeys.GUI_SLIDER_SHARPNESS, "острота");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SCALE, "Масштаб континентов");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_JITTER, "Дрожание континентов");
 this.add(RGFTranslationKeys.GUI_SLIDER_CONTINENT_SKIPPING, "Пропуск континентов");

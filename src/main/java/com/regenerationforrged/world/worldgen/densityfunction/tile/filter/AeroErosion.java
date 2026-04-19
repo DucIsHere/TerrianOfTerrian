@@ -11,6 +11,7 @@ import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.noise.module.Noises;
 
 public class AeroErosion implements Filter {
+    private final int mapSize;
     private final Noise windX;
     private final Noise windZ;
     private final float erodeStrength;
@@ -18,13 +19,18 @@ public class AeroErosion implements Filter {
     private final float minHeight;
     private final Modifier modifier;
 
-    public AeroErosion(Noise windX, Noise windZ, float erodeStrength, float depositStrength, float minHeight, Modifier modifier) {
+    public AeroErosion(int mapSize, Noise windX, Noise windZ, float erodeStrength, float depositStrength, float minHeight, Modifier modifier) {
+        this.mapSize = mapSize;
         this.windX = windX;
         this.windZ = windZ;
         this.erodeStrength = erodeStrength;
         this.depositStrength = depositStrength;
         this.minHeight = minHeight;
         this.modifier = modifier;
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override
@@ -126,5 +132,12 @@ public class AeroErosion implements Filter {
             }
             airDust = nextAirDust; // Cập nhật bụi cho lần lặp kế tiếp
         }
+    }
+
+    public static IntFunction<AeroErosion> factory(GeneratorContext context) {
+        return (size) -> {
+            Modifier mod = Modifier.range(context.levels.ground, context.levels.ground(120)).invert();
+            return new AeroErosion(size, context.windX, context.windZ, 0.015F, 0.3F, context.levels.water + 1.0F, mod);
+        };
     }
 }

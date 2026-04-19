@@ -1,5 +1,7 @@
 package com.regenerationforrged.world.worldgen.densityfunction.tile.filter;
 
+import java.util.function.IntFunction;
+
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
@@ -10,14 +12,20 @@ import com.regenerationforrged.world.worldgen.noise.module.Noise;
  * Được thiết kế để chạy sau ForceErosion và trước ThermalErosion.
  */
 public class LandSlide implements Filter {
+    private final int mapSize;
     private final Noise stabilityNoise; 
     private final float collapseThreshold;
     private final Modifier modifier;
 
-    public LandSlide(Noise stabilityNoise, float collapseThreshold, Modifier modifier) {
+    public LandSlide(int mapSize, Noise stabilityNoise, float collapseThreshold, Modifier modifier) {
+        this.mapSize = mapSize;
         this.stabilityNoise = stabilityNoise;
         this.collapseThreshold = collapseThreshold;
         this.modifier = modifier;
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override
@@ -119,5 +127,9 @@ public class LandSlide implements Filter {
                 neighbor.heightErosion += amount * 0.25f;
             }
         }
+    }
+
+    public static IntFunction<LandSlide> factory(GeneratorContext context) {
+        return (mapSize) -> new LandSlide(mapSize, context.stabilityNoise, 0.25f, Modifier.DEFAULT);
     }
 }

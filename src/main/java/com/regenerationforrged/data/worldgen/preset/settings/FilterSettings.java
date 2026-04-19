@@ -21,7 +21,7 @@ public class FilterSettings {
     }
     
     public FilterSettings copy() {
-    	return new FilterSettings(this.erosion.copy(), this.smoothing.copy());
+    	return new FilterSettings(this.erosion.copy(), this.smoothing.copy(), this.glacial.copy());
     }
     
     public static class Erosion {
@@ -58,30 +58,51 @@ public class FilterSettings {
 	public static class Glacial {
 		public static final Codec<GlacialErosion> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("iterations").forGetter((o) -> o.iterations),
-			Codec.FLOAT.fieldOf("erosion_rate").forGetter((o) -> o.erosion_rate),
-			Codec.FLOAT.fieldIf("carry_capacity").forGetter((o) -> o.carry_capacity),
-			Codec.FLOAT.fieldOf("snow_lines").forGetter((o) -> o.snow_lines),
-			Codec.FLOAT.fieldOf("radius").forGetter((o) -> o.radius)
+            Codec.FLOAT.fieldOf("abrasionRate").forGetter((o) -> o.abrasionRate),
+            Codec.FLOAT.fieldOf("depositSpeed").forGetter((o) -> o.depositSpeed),
+            Codec.FLOAT.fieldOf("accumulationRate").forGetter((o) -> o.accumulationRate),
+            Codec.FLOAT.fieldOf("meltRate").forGetter((o) -> o.meltRate),
+            Codec.FLOAT.fieldOf("viscosity").forGetter((o) -> o.viscosity),
+            Codec.FLOAT.fieldOf("pluckingProbability").forGetter((o) -> o.pluckingProbability),
+            Codec.FLOAT.fieldOf("pluckingRate").forGetter((o) -> o.pluckingRate),
+            Codec.FLOAT.fieldOf("initialSpeed").forGetter((o) -> o.initialSpeed),
+            Codec.FLOAT.fieldOf("initialIceVolume").forGetter((o) -> o.initialIceVolume),
+            Codec.INT.fieldOf("maxLifeTime").forGetter((o) -> o.maxLifeTime)
 		).apply(instance, GlacialErosion::new));
 
 		public int iterations;
-		public float erosion_rate;
-		public float carry_capacity;
-		public float snow_lines;
-		public float radius;
+        public float abrasionRate;
+        public float depositSpeed;
+        public float accumulationRate;
+        public float meltRate;
+        public float viscosity;
+        public float pluckingProbability;
+        public float pluckingRate;
+        public float initialSpeed;
+        public float initialIceVolume;
+        public int maxLifeTime;
 
-		public GlacialErosion(int iterations, float erosion_rate, float carry_capacity,
-			                float snow_lines, float radius
+		public GlacialErosion(int iterations, float abrasionRate, float depositSpeed,
+			float accumulationRate, float meltRate, float viscosity,
+			float pluckingProbability, float pluckingRate, float initalSpeed,
+			float initalIceVolume, int maxLideTime
 		) {
-			this.iterations = iterations;
-			this.erosion_rate = erosion_rate;
-			this.carry_capacity = carry_capacity;
-			this.erosion_rate = erosion_rate;
-			this.radius = radius;
+		    this.iterations = iterations;
+            this.abrasionRate = abrasionRate;
+            this.depositSpeed = depositSpeed;
+            this.accumulationRate = accumulationRate;
+            this.meltRate = meltRate;
+            this.viscosity = viscosity;
+            this.pluckingProbability = pluckingProbability;
+            this.pluckingRate = pluckingRate;
+            this.initialSpeed = initialSpeed;
+            this.initialIceVolume = initialIceVolume;
+            this.maxLifeTime = maxLifeTime;
 		}
 
 		public GlacialErosion copy() {
-			return new GlacialErosion(this.iterations, this.erosion_rate, this.carry_capacity, this.snow_lines, this.radius);
+			return new GlacialErosion(iterations, abrasionRate, depositSpeed, accumulationRate, meltRate, viscosity, 
+                                      pluckingProbability, pluckingRate, initialSpeed, initialIceVolume, maxLifeTime);
 		}
 	}
     

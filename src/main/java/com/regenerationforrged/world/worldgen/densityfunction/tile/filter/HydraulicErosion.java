@@ -10,7 +10,7 @@ import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 import com.regenerationforrged.world.worldgen.util.FastRandom;
 
-public class Erosion implements Filter {
+public class HydraulicErosion implements Filter {
     private final float erodeSpeed;
     private final float depositSpeed;
     private final float initialSpeed;
@@ -22,7 +22,7 @@ public class Erosion implements Filter {
     private final int mapSize;
     private final Modifier modifier;
     
-    public Erosion(final int seed, final int mapSize, final FilterSettings.Erosion settings, final Modifier modifier) {
+    public HydraulicErosion(final int seed, final int mapSize, final FilterSettings.Erosion settings, final Modifier modifier) {
         this.seed = seed;
         this.mapSize = mapSize;
         this.modifier = modifier;
@@ -190,7 +190,7 @@ public class Erosion implements Filter {
         }
     }
     
-    public static IntFunction<Erosion> factory(final GeneratorContext context) {
+    public static IntFunction<HydraulicErosion> factory(final GeneratorContext context) {
         return new Factory(context.seed.root(), context.preset.filters(), context.levels);
     }
     
@@ -223,7 +223,7 @@ public class Erosion implements Filter {
         }
     }
     
-    private static class Factory implements IntFunction<Erosion> {
+    private static class Factory implements IntFunction<HydraulicErosion> {
         private static final int SEED_OFFSET = 12768;
         private final int seed;
         private final Modifier modifier;
@@ -236,8 +236,8 @@ public class Erosion implements Filter {
         }
         
         @Override
-        public Erosion apply(final int size) {
-            return new Erosion(this.seed, size, this.settings, this.modifier);
+        public HydraulicErosion apply(final int size) {
+            return new HydraulicErosion(this.seed, size, this.settings, this.modifier);
         }
     }
 }

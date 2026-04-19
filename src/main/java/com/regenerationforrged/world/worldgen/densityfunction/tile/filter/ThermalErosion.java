@@ -1,18 +1,26 @@
 package com.regenerationforrged.world.worldgen.densityfunction.tile.filter;
 
+import java.util.function.IntFunction;
+
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 
 public class ThermalErosion implements Filter {
+    private final int mapSize;
     private final float talusThreshold;
     private final float materialTransfer;
     private final Modifier modifier;
 
-    public ThermalErosion(float talusThreshold, float materialTransfer, Modifier modifier) {
+    public ThermalErosion(int mapSize, float talusThreshold, float materialTransfer, Modifier modifier) {
+        this.mapSize = mapSize;
         this.talusThreshold = talusThreshold;
         this.materialTransfer = materialTransfer;
         this.modifier = modifier;
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override
@@ -76,9 +84,8 @@ public class ThermalErosion implements Filter {
     }
     /**
      * Factory method để khởi tạo nhanh với các thông số chuẩn địa chất
-     */
-    public static ThermalErosion makeDefault(Modifier modifier) {
-        // Ngưỡng 0.15F tương đương khoảng 30-35 độ (góc nghỉ của cát/đất khô)
-        return new ThermalErosion(0.15F, 0.5F, modifier);
+     **/
+    public static IntFunction<ThermalErosion> factory(GeneratorContext context) {
+        return (mapSize) -> new ThermalErosion(mapSize, 0.15f, 0.5f, Modifier.DEFAULT);
     }
 }

@@ -16,7 +16,7 @@ import java.util.function.IntFunction;
  * Kết hợp mô phỏng dòng chảy vật lý (Viscosity Flow) và bào mòn dựa trên hạt (Droplet Erosion)
  * Chuyên dụng để tạo địa hình thung lũng chữ U, vách đá mài mòn và gò đồi Moraine.
  */
-public class GlacialErosionFull implements Filter {
+public class GlacialErosion implements Filter {
     private final int seed;
     private final int mapSize;
     private final float snowLine;
@@ -40,7 +40,7 @@ public class GlacialErosionFull implements Filter {
     private final int[][] erosionBrushIndices;
     private final float[][] erosionBrushWeights;
 
-    public GlacialErosionFull(int seed, int mapSize, float erodeSpeed, float depositSpeed, float snowLine, Modifier modifier) {
+    public GlacialErosion(int seed, int mapSize, float erodeSpeed, float depositSpeed, float snowLine, Modifier modifier) {
         this.seed = seed;
         this.mapSize = mapSize;
         this.snowLine = snowLine;

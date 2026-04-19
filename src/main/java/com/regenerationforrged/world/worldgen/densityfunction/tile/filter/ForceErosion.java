@@ -1,11 +1,14 @@
 package com.regenerationforrged.world.worldgen.densityfunction.tile.filter;
 
+import java.util.function.IntFunction;
+
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 
 public class ForceErosion implements Filter {
+    private final int mapSize;
     // Faulting - Cannyon
     private final Noise faultNoise;
     private final float faultDepth;
@@ -19,9 +22,10 @@ public class ForceErosion implements Filter {
 
     private final Modifier modifier;
 
-    public ForceErosion(Noise faultNoise, float faultDepth, float faultThreshold, float faultPower,
+    public ForceErosion(int mapSize, Noise faultNoise, float faultDepth, float faultThreshold, float faultPower,
                     Noise upliftNoise, float upliftHeight, float upliftThreshold, Modifier modifier
     ) {
+        this.mapSize = mapSize;
         this.faultNoise = faultNoise;
         this.faultDepth = faultDepth;
         this.faultPower = faultPower;
@@ -30,6 +34,10 @@ public class ForceErosion implements Filter {
         this.upliftHeight = upliftHeight;
         this.upliftThreshold = upliftThreshold;
         this.modifier = modifier;
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override
@@ -78,5 +86,13 @@ public class ForceErosion implements Filter {
                 }
             }
         }
+    }
+
+    public static IntFunction<ForceErosion> factory(GeneratorContext context) {
+        return (size) -> new ForceErosion(size,
+            context.faultNoise, 15.0F, 0.8F, 3.0F, // Thông số Đứt gãy
+            context.upliftNoise, 35.0F, 0.6F,      // Thông số Nâng kiến tạo
+            Modifier.DEFAULT
+        );
     }
 }
