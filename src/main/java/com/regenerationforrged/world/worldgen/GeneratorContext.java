@@ -47,6 +47,7 @@ public class GeneratorContext {
     public final IntFunction<ThermalErosion> thermalErosionFactory;
     public final IntFunction<LandSlide> landSlideFactory;
     public final IntFunction<AdvancedSoilFluction> soilFunctionFactory;
+    public final IntFunction<CoastalErosion> coastalErosionFactory;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -63,19 +64,41 @@ public class GeneratorContext {
         Noise baseUplift = Noises.perlin(this.seed.next(), 2000, 3);
         this.upliftNoise = Noises.warpPerlin(baseUplift, this.seed.next(), 400, 3, 350.0F);
 
-        this.forceErosionFactory = ForceErosion.factory(this);
-
-        this.aeroErosionFactory = AeroErosion.factory(this);
-
-        this.glacialErosionFactory = GlacialErosionFull.factory(this);
-
-        this.hydraulicErosionFactory = Erosion.factory(this);
-
-        this.soilFluctionFactory = SoilFluction.factory(this);
-
-        this.thermalErosionFactory = ThermalErosion.factory(this);
         
-        this.landSlideFactory = LandSlide.factory(this);
+        // 1. Định nghĩa CoastalErosionFactory
+        this.coastalErosionFactory = (size) -> new CoastalErosion(
+            size,
+            this.levels.water,
+            this.windX, 
+            0.75f, 
+            0.65f, 
+            Modifier.range(this.levels.water - 8, this.levels.water + 35)
+        );
+
+        // 2. Định nghĩa các Factory khác để khớp với file WorldFilters của bạn
+        this.forceErosionFactory = (size) -> new ForceErosion(
+            size, this.faultNoise, 15.0F, 0.8F, 3.0F, 
+            this.upliftNoise, 35.0F, 0.6F, Modifier.DEFAULT
+        );
+
+        this.aeroErosionFactory = (size) -> new AeroErosion(
+            size, this.windX, this.windZ, 0.015F, 0.3F,
+            this.levels.water + 1.0F,
+            Modifier.range(this.levels.ground, this.levels.ground + 120).invert()
+        );
+
+        this.hydraulicErosionFactory = (size) -> new Erosion(
+            size, this.levels, this.preset.filters().erosion // Giả định constructor của Erosion
+        );
+
+        this.thermalErosionFactory = (size) -> 
+            new ThermalErosion(size, 0.15F, 0.5F, Modifier.DEFAULT);
+
+        this.landSlideFactory = (size) -> 
+            new LandSlide(size, this.stabilityNoise, 0.25F, Modifier.DEFAULT);
+
+        this.glacialErosionFactory = (size) -> 
+            new GlacialErosionFull(size, this.preset.filters().glacial, this.seed);
 
         this.generator = new TileGenerator(heightMap.make(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
