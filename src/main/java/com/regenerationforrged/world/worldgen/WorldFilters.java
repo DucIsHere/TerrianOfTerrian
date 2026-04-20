@@ -15,6 +15,7 @@ import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Glacia
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.NoiseCorrection;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Smoothing;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.Steepness;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSoilFluction;
 
 public class WorldFilters {
     private Smoothing smoothing;
@@ -30,10 +31,12 @@ public class WorldFilters {
     private final WorldErosion<Erosion> hydraulicErosion;
     private final WorldErosion<ThermalErosion> thermalErosion;
     private final WorldErosion<LandSlide> landSlide;
+    private final WorldErosion<AdvancedSoilFluction> soilFluction;
 
     private final int erosionIterations;
     private final int smoothingIterations;
     private final int glacialIterations;
+    private final int soilIterations;
     
     public WorldFilters(GeneratorContext context) {
         this.settings = context.preset.filters();
@@ -64,12 +67,17 @@ public class WorldFilters {
         IntFunction<GlacialErosion> glacialFactory = (size) -> 
             new GlacialErosion(size, settings.glacial, context.seed);
 
+        IntFunction<AdvancedSoilFluction> soilFactory = (size) ->
+            new AdvancedSoilFluction(size, context.soilFluctionNoise, settings.soilFluction, context.seed);
+
         this.forceErosion = new WorldErosion<>(context.forceErosionFactory, (f, size) -> f.getSize() == size);
         this.aeroErosion = new WorldErosion<>(context.aeroErosionFactory, (a, size) -> a.getSize() == size);
         this.glacialErosion = new WorldErosion<>(context.glacialErosionFactory, (g, size) -> g.getSize() == size);
         this.hydraulicErosion = new WorldErosion<>(context.hydraulicErosionFactory, (e, size) -> e.getSize() == size);
         this.thermalErosion = new WorldErosion<>(context.thermalErosionFactory, (t, size) -> t.getSize() == size);
         this.landSlide = new WorldErosion<>(context.landSlideFactory, (l, size) -> l.getSize() == size);
+        this.soilFluction = new WorldErosion<>(AdvancedSoilFluction.factory(context), (s, size) -> s.getSize() == size);
+        this.soilIterations = settings.soilFluction.iterations;
 
         this.erosionIterations = context.preset.filters().erosion.dropletsPerChunk;
         this.smoothingIterations = context.preset.filters().smoothing.iterations;
@@ -137,6 +145,8 @@ public class WorldFilters {
         // ============================================================
         this.thermalErosion.get(size).apply(map, seedX, seedZ, 2);
         this.landSlide.get(size).apply(map, seedX, seedZ, 1);
+
+        this.soilFluction.get(size).apply(map, seedX, seedZ, 4);
         
         // ============================================================
         // BƯỚC 6: LÀM MƯỢT (SMOOTHING)
