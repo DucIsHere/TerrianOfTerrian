@@ -13,7 +13,7 @@ import net.minecraft.util.KeyDispatchDataCodec;
 
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.RTFRandomState;
-import com.regenerationforrged.world.worldgen.surface.RTFSurfaceSystem;
+import com.regenerationforrged.world.worldgen.surface.RGFSurfaceSystem;
 
 public record SnowStrataRule(Holder<Noise> depthNoise, Holder<Noise> layerNoise) implements SurfaceRules.RuleSource {
     public static final Codec<SnowStrataRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(

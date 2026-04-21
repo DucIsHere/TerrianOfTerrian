@@ -21,11 +21,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.SurfaceRules.Context;
-import com.regenerationforrged.world.worldgen.RTFRandomState;
+
+import com.regenerationforrged.world.worldgen.RGFRandomState;
 import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.noise.module.Noises;
-import com.regenerationforrged.world.worldgen.surface.RTFSurfaceSystem;
+import com.regenerationforrged.world.worldgen.surface.RGFSurfaceSystem;
 
 public record StrataRule(ResourceLocation name, Holder<Noise> selector, List<Strata> strata, int iterations) implements SurfaceRules.RuleSource {
 	public static final Codec<StrataRule> CODEC = RecordCodecBuilder.create(instance -> instance.group(

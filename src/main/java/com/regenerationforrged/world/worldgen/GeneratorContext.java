@@ -17,6 +17,7 @@ import com.regenerationforrged.world.worldgen.noise.module.Noise;
 import com.regenerationforrged.world.worldgen.noise.module.Noises;
 import com.regenerationforrged.world.worldgen.util.Seed;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSoilFluction;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSubsurfaceFlow;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AeroErosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.GlacialErosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.HydarulicErosion;
@@ -48,6 +49,7 @@ public class GeneratorContext {
     public final IntFunction<LandSlide> landSlideFactory;
     public final IntFunction<AdvancedSoilFluction> soilFunctionFactory;
     public final IntFunction<CoastalErosion> coastalErosionFactory;
+    public final IntFunction<AdvancedSubsurfaceFlow> advancedSubsurfaceFlowFactory;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -99,6 +101,10 @@ public class GeneratorContext {
 
         this.glacialErosionFactory = (size) -> 
             new GlacialErosionFull(size, this.preset.filters().glacial, this.seed);
+
+        thie.advancedSoilFluctionFactory = AdvancedSoilFluction.factory(this);
+        
+        this.advancedSubsurfaceFlowFactory = AdvancedSubsurfaceFlow.factory(this);
 
         this.generator = new TileGenerator(heightMap.make(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;
