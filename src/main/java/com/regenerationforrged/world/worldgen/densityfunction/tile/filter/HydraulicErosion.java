@@ -11,6 +11,7 @@ import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 import com.regenerationforrged.world.worldgen.util.FastRandom;
 
 public class HydraulicErosion implements Filter {
+    // HYDRAULIC EROSION
     private final float erodeSpeed;
     private final float depositSpeed;
     private final float initialSpeed;
@@ -21,7 +22,15 @@ public class HydraulicErosion implements Filter {
     private final int seed;
     private final int mapSize;
     private final Modifier modifier;
-    
+    // FLUVIAL EROSION
+    // USING STREAM POWER LAW: E = K * A^m * S^n
+    private final float fluvialStreamPowerK;
+    private final float fluvialFluxExponent;
+    private final float fluvialSlopeExponent;
+    private final float minFluvialErosion;
+    private final float maxFluvialErosion;
+    private final float lateralErosionFactor;
+
     public HydraulicErosion(final int seed, final int mapSize, final FilterSettings.Erosion settings, final Modifier modifier) {
         this.seed = seed;
         this.mapSize = mapSize;
@@ -34,6 +43,12 @@ public class HydraulicErosion implements Filter {
         this.erosionBrushIndices = new int[mapSize * mapSize][];
         this.erosionBrushWeights = new float[mapSize * mapSize][];
         this.initBrushes(mapSize, 4);
+        this.fluvialStreamPowerK = settings.fluvialStreamPowerK;
+        this.fluvialFluxExponent = settings.fluvialFluxExponent;
+        this.fluvialSlopeExponent = settings.fluvialSlopeExponent;
+        this.minFluvialErosion = settings.minFluvialErosion;
+        this.maxFluvialErosion = settings.maxFluvialErosion;
+        this.lateralErosionFactor = settings.lateralErosionFactor;
     }
     
     public int getSize() {
@@ -53,6 +68,8 @@ public class HydraulicErosion implements Filter {
         final TerrainPos gradient1 = new TerrainPos();
         final TerrainPos gradient2 = new TerrainPos();
         final FastRandom random = new FastRandom();
+        final float[] fluxMap = new float[mapSize];
+
         for (int i = 0; i < iterationsPerChunk; ++i) {
             final long iterationSeed = NoiseUtil.seed(this.seed, i);
             for (int cz = 0; cz < lengthChunks; ++cz) {
@@ -70,6 +87,59 @@ public class HydraulicErosion implements Filter {
                     this.applyDrop(posX, posZ, cells, mapSize, gradient1, gradient2);
                 }
             }
+        }
+
+        final int width = size.width();
+        final int height = size.height();
+        for (int z = 1; z < height - 1; z++) {
+            for (int x = 1; x < width - 1; x++) {
+                int idx = z * width + x;
+                Cell cell = cells[idx];
+
+                if (cell.erosionMask) continue;
+
+                float flux = fluxMap[idx];
+                if (flux < minFluvialFlux) continue; // Chỉ bào mòn những nơi có nước tụ thành dòng
+
+                // Tìm độ dốc cục bộ lớn nhất từ 4 hướng (Đơn giản hóa để tăng tốc)
+                float hCenter = cell.height;
+                float maxSlope = 0.0f;
+                maxSlope = Math.max(maxSlope, hCenter - cells[idx + 1].height);
+                maxSlope = Math.max(maxSlope, hCenter - cells[idx - 1].height);
+                maxSlope = Math.max(maxSlope, hCenter - cells[idx + width].height);
+                maxSlope = Math.max(maxSlope, hCenter - cells[idx - width].height);
+                maxSlope = Math.max(0.0001f, maxSlope); // Tránh lỗi chia cho 0
+
+                // Stream Power Law thực tế
+                float fluvialErosion = fluvialStreamPowerK 
+                                     * (float) Math.pow(flux, fluvialFluxExponent) 
+                                     * (float) Math.pow(maxSlope, fluvialSlopeExponent);
+                
+                // Khống chế và áp dụng Modifier bảo vệ bề mặt nước
+                fluvialErosion = Math.min(fluvialErosion, maxFluvialErosion);
+                fluvialErosion = this.modifier.modify(cell, fluvialErosion);
+
+                if (fluvialErosion > 0) {
+                    // Đào sâu điểm trung tâm lòng sông
+                    cell.height -= fluvialErosion;
+                    cell.heightErosion -= fluvialErosion;
+
+                    // Xói mòn ngang (Lateral Erosion) dạt ra 4 ô lân cận để tạo bờ sông chữ U
+                    float lateral = fluvialErosion * lateralErosionFactor;
+                    erodeLateral(cells[idx + 1], lateral);
+                    erodeLateral(cells[idx - 1], lateral);
+                    erodeLateral(cells[idx + width], lateral);
+                    erodeLateral(cells[idx - width], lateral);
+                }
+            }
+        }
+    }
+
+    private void erodeLateral(Cell cell, float amount) {
+        if (!cell.erosionMask) {
+            float e = this.modifier.modify(cell, amount);
+            cell.height -= e;
+            cell.heightErosion -= e;
         }
     }
     
@@ -91,21 +161,31 @@ public class HydraulicErosion implements Filter {
             dirX = dirX * 0.05f - gradient1.gradientX * 0.95f;
             dirY = dirY * 0.05f - gradient1.gradientY * 0.95f;
             float len = (float)Math.sqrt(dirX * dirX + dirY * dirY);
+
             if (Float.isNaN(len)) {
                 len = 0.0f;
             }
+
             if (len != 0.0f) {
                 dirX /= len;
                 dirY /= len;
             }
+
             posX += dirX;
             posY += dirY;
+
+            if (dropletIndex >= 0 && dropletIndex < mapSize) {
+                fluxMap[dropletIndex] += water;
+            }
+
             if ((dirX == 0.0f && dirY == 0.0f) || posX < 0.0f || posX >= mapSize - 1 || posY < 0.0f || posY >= mapSize - 1) {
                 return;
             }
+
             final float newHeight = gradient2.at(cells, mapSize, posX, posY).height;
             final float deltaHeight = newHeight - gradient1.height;
             final float sedimentCapacity = Math.max(-deltaHeight * speed * water * 4.0f, 0.01f);
+
             if (sediment > sedimentCapacity || deltaHeight > 0.0f) {
                 final float amountToDeposit = (deltaHeight > 0.0f) ? Math.min(deltaHeight, sediment) : ((sediment - sedimentCapacity) * this.depositSpeed);
                 sediment -= amountToDeposit;
@@ -113,8 +193,7 @@ public class HydraulicErosion implements Filter {
                 this.deposit(cells[dropletIndex + 1], amountToDeposit * cellOffsetX * (1.0f - cellOffsetY));
                 this.deposit(cells[dropletIndex + mapSize], amountToDeposit * (1.0f - cellOffsetX) * cellOffsetY);
                 this.deposit(cells[dropletIndex + mapSize + 1], amountToDeposit * cellOffsetX * cellOffsetY);
-            }
-            else {
+            } else {
                 final float amountToErode = Math.min((sedimentCapacity - sediment) * this.erodeSpeed, -deltaHeight);
                 for (int brushPointIndex = 0; brushPointIndex < this.erosionBrushIndices[dropletIndex].length; ++brushPointIndex) {
                     final int nodeIndex = this.erosionBrushIndices[dropletIndex][brushPointIndex];
