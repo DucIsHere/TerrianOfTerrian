@@ -23,11 +23,14 @@ public class WorldFilters {
     private final WorldErosion<ThermalErosion> thermalErosion;
     private final WorldErosion<LandSlide> landSlide;
     private final WorldErosion<AdvancedSoilFluction> soilFluction;
+    private final WorldErosion<AdvancedSubsurfaceFlow> advancedSubsurfaceFlow;
+    private final WorldErosion<PhysicalSnowAvalanche> snowAvalanche;
 
     private final int erosionIterations;
     private final int smoothingIterations;
     private final int glacialIterations;
     private final int soilIterations;
+    private final int snowAvalancheIterations;
     
     public WorldFilters(GeneratorContext context) {
         this.settings = context.preset.filters();
@@ -51,8 +54,10 @@ public class WorldFilters {
         this.hydraulicErosion = new WorldErosion<>(context.hydraulicErosionFactory, (e, size) -> e.getSize() == size);
         this.thermalErosion = new WorldErosion<>(context.thermalErosionFactory, (t, size) -> t.getSize() == size);
         this.landSlide = new WorldErosion<>(context.landSlideFactory, (l, size) -> l.getSize() == size);
-        this.soilFluction = new WorldErosion<>(AdvancedSoilFluction.factory(context), (s, size) -> s.getSize() == size);
-        
+        this.soilFluction = new WorldErosion<>(context.soilFluctionFactory, (s, size) -> s.getSize() == size);
+        this.snowAvalanche = new WorldErosion<>(context.physicalSnowAvalancheFactory, (s, size) -> s.getSize() == size);
+        this.advancedSubsurfaceFlow = new WorldErosion<>(context.advancedSubsurfaceFlowFactory, (s, size) -> s.getSize() == size);
+
         this.soilIterations = settings.soilFluction.iterations;
         this.glacialIterations = settings.glacial.iterations;
         this.erosionIterations = context.preset.filters().erosion.dropletsPerChunk;
@@ -104,6 +109,7 @@ public class WorldFilters {
         this.thermalErosion.get(size).apply(map, seedX, seedZ, 2);
         this.landSlide.get(size).apply(map, seedX, seedZ, 1);
         this.soilFluction.get(size).apply(map, seedX, seedZ, 4);
+        this.snowAvalanche.get(size).apply(map, seedX, seedZ, this.snowAvalancheIterations);
         
         // Bước 6: Làm mượt
         this.smoothing.apply(map, seedX, seedZ, this.smoothingIterations);

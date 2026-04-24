@@ -19,7 +19,7 @@ public class AquiferFilter implements Filter {
     private final Size size;
     private final float seaLevel;
     private final Noise stabilityNoise;
-    private final FilterSettings.AquiferSettings settings;
+    private final FilterSettings.Aquifer settings;
 
     // Các hằng số vật lý mô phỏng
     private static final float GRAVITY = 9.81f;

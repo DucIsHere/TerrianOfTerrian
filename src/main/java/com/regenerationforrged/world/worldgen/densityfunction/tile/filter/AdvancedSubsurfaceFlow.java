@@ -16,7 +16,7 @@ import java.util.function.IntFunction;
 public class AdvancedSubsurfaceFlow implements Filter {
     private final int mapSize;
     private final float seaLevel;
-    private final FilterSettings.AquiferSettings s; // Trung tâm điều khiển toàn bộ hằng số vật lý
+    private final FilterSettings.AdvancedSubsurfaceFlow advancedSubsurfaceFlow; // Trung tâm điều khiển toàn bộ hằng số vật lý
 
     private final Noise permeabilityNoise;
     private final Noise thermalNoise;
@@ -25,7 +25,7 @@ public class AdvancedSubsurfaceFlow implements Filter {
         this.mapSize = mapSize;
         this.seaLevel = context.levels.water;
         // Kết nối trực tiếp với cấu hình trong FilterSettings
-        this.s = context.preset.filters().aquifer();
+        this.advancedSubsurfaceFlow = context.preset.filters().advancedSubsurfaceFlow();
         this.permeabilityNoise = context.stabilityNoise;
         this.thermalNoise = context.continentalnessNoise;
     }
@@ -47,7 +47,7 @@ public class AdvancedSubsurfaceFlow implements Filter {
         float[] currentThermal = new float[total];
 
         // Lấy số bước lặp từ cấu hình
-        int simSteps = s.iterations() > 0 ? s.iterations() : iterations;
+        int simSteps = advancedSubsurfaceFlow.iterations() > 0 ? advancedSubsurfaceFlow.iterations() : iterations;
 
         for (int iter = 0; iter < simSteps; iter++) {
             Arrays.fill(waterFlux, 0.0f);
@@ -62,9 +62,9 @@ public class AdvancedSubsurfaceFlow implements Filter {
                 int wz = map.getBlockZ() + (i / width);
 
                 // 1.1 Infiltration: Thấm dựa trên Scale và Power từ Settings
-                float localPerm = (float) permeabilityNoise.compute(wx * s.soilPermeabilityScale(), wz * s.soilPermeabilityScale(), seedX);
-                float infPotential = cell.precipitation * (localPerm * s.soilPermeabilityPower());
-                float absorbed = Math.min(cell.water * s.infiltrationRate(), (cell.aquiferCapacity - cell.aquiferWater) * infPotential);
+                float localPerm = (float) permeabilityNoise.compute(wx * advancedSubsurfaceFlow.soilPermeabilityScale(), wz * advancedSubsurfaceFlow.soilPermeabilityScale(), seedX);
+                float infPotential = cell.precipitation * (localPerm * advancedSubsurfaceFlow.soilPermeabilityPower());
+                float absorbed = Math.min(cell.water * advancedSubsurfaceFlow.infiltrationRate(), (cell.aquiferCapacity - cell.aquiferWater) * infPotential);
                 cell.water -= absorbed;
                 cell.aquiferWater += absorbed;
 

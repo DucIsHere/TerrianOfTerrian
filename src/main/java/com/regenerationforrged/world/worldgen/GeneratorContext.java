@@ -19,6 +19,7 @@ import com.regenerationforrged.world.worldgen.util.Seed;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSoilFluction;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSubsurfaceFlow;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AeroErosion;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AquiferFilter;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.GlacialErosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.HydarulicErosion;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.ForceErosion;
@@ -43,13 +44,15 @@ public class GeneratorContext {
     // FACTORY METHOS (LAZY-LOADING)
     public final IntFunction<ForceErosion> forceErosionFactory;
     public final IntFunction<AeroErosion> aeroErosionFactory;
-    public final IntFunction<GlacialErosionFull> glacialErosionFactory;
+    public final IntFunction<GlacialErosion> glacialErosionFactory;
     public final IntFunction<Erosion> hydraulicErosionFactory;
     public final IntFunction<ThermalErosion> thermalErosionFactory;
     public final IntFunction<LandSlide> landSlideFactory;
     public final IntFunction<AdvancedSoilFluction> soilFunctionFactory;
     public final IntFunction<CoastalErosion> coastalErosionFactory;
     public final IntFunction<AdvancedSubsurfaceFlow> advancedSubsurfaceFlowFactory;
+    public final IntFunction<PhysicalSnowAvalanche> physicalSnowAvalancheFactory;
+    public final IntFunction<AquiferFilter> aquiferFilterFactory;
     
     public GeneratorContext(Preset preset, HolderGetter<Noise> noiseLookup, int seed, int tileSize, int tileBorder, int batchCount, @Nullable TileCache cache) {
         this.preset = preset;
@@ -100,11 +103,15 @@ public class GeneratorContext {
             new LandSlide(size, this.stabilityNoise, 0.25F, Modifier.DEFAULT);
 
         this.glacialErosionFactory = (size) -> 
-            new GlacialErosionFull(size, this.preset.filters().glacial, this.seed);
+            new GlacialErosion(size, this.preset.filters().glacial, this.seed);
 
-        thie.advancedSoilFluctionFactory = AdvancedSoilFluction.factory(this);
-        
-        this.advancedSubsurfaceFlowFactory = AdvancedSubsurfaceFlow.factory(this);
+        this.physicalSnowAvalancheFactory = (size) -> new PhysicalSnowAvalanche(size, this.preset.filters().snowAvalanche, this.seed);
+
+        this.advancedSoilFluctionFactory = (size) -> new AdvancedSoilFluction(size, this.preset.filters().soilFluction, this.seed);
+
+        this.advancedSubsurfaceFlowFactory = (size) -> new AdvancedSubsurfaceFlow(size, this.preset.filters().advancedSubsurfaceFlow, this.seed);
+
+        this.aquiferFilterFactory = (size) -> new AquiferFilter(size, this.preset.filters().aquifer, this.seed);
 
         this.generator = new TileGenerator(heightMap.make(this), new worldFilters(this), tileSize, tileBorder, batchCount);
         this.cache = cache;

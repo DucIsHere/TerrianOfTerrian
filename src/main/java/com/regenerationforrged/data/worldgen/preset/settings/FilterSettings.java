@@ -2,6 +2,7 @@ package com.regenerationforrged.data.worldgen.preset.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.regenerationforrged.world.worldgen.densityfunction.tile.filter.AdvancedSubsurfaceFlow;
 
 public class FilterSettings {
     public static final Codec<FilterSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -14,12 +15,16 @@ public class FilterSettings {
     public Erosion erosion;
     public GlacialErosion glacial;
     public SoilFluction soilFluction;
+    public AdvancedSubsurfaceFlow advancedSubsurfaceFlow;
+    public Aquifer aquifer;
     public Smoothing smoothing;
 
-    public FilterSettings(Erosion erosion, GlacialErosion glacial, SoilFluction soilFluction, Smoothing smoothing) {
+    public FilterSettings(Erosion erosion, GlacialErosion glacial, SoilFluction soilFluction, AdvancedSubsurfaceFlow advancedSubsurfaceFlow, Aquifer aquifer, Smoothing smoothing) {
         this.erosion = erosion;
         this.glacial = glacial;
         this.soilFluction = soilFluction;
+        this.advancedSubsurfaceFlow = advancedSubsurfaceFlow;
+        this.aquifer = aquifer;
         this.smoothing = smoothing;
     }
 
@@ -28,6 +33,8 @@ public class FilterSettings {
             this.erosion.copy(),
             this.glacial.copy(),
             this.soilFluction.copy(),
+            this.advancedSubsurfaceFlow.copy(),
+            this.aquifer.copy(),
             this.smoothing.copy()
         );
     }
@@ -147,6 +154,65 @@ public class FilterSettings {
 
         public SoilFluction copy() {
             return new SoilFluction(iterations, flowRate, maxSedimentFlow, weatheringRate, lobeFriction);
+        }
+    }
+
+    public static class AdvancedSubsurfaceFlow {
+        public static final Codec<AdvancedSubsurfaceFlow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("baseViscosity").forGetter(o -> o.baseViscosity),
+            Codec.FLOAT.fieldOf("solubility").forGetter(o -> o.solubility),
+            Codec.FLOAT.fieldOf("riverThreshold").forGetter(o -> o.riverThreshold),
+            Codec.FLOAT.fieldOf("flowMomentum").forGetter(o -> o.flowMomentum),
+            Codec.FLOAT.fieldOf("infiltrationRate").forGetter(o -> o.infiltrationRate),
+            Codec.INT.fieldOf("iterations").forGetter(o -> o.iterations)
+        ).apply(instance, AdvancedSubsurfaceFlow::new));
+
+        public float baseVisvosity;
+        public float solubility;
+        public float riverThreshold;
+        public float flowMomentum;
+        public float infiltrationRate;
+        public int iterations;
+
+        public AdvancedSubsurfaceFlow(float baseViscosity, float solubility, float riverThreshold, float flowMomentum, float infiltrationRate, int iterations) {
+            this.baseVisvosity = baseViscosity;
+            this.solubility = solubility;
+            this.riverThreshold = riverThreshold;
+            this.flowMomentum = flowMomentum;
+            this.infiltrationRate = infiltrationRate;
+            this.iterations = iterations;
+        }
+
+        public AdvancedSubsurfaceFlow copy() {
+            return new AdvancedSubsurfaceFlow(baseVisvosity, solubility, riverThreshold, flowMomentum, infiltrationRate, iterations);
+        }
+    }
+
+    public static class Aquifer {
+        public static final Codec<Aquifer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("basePorosity").forGetter(o -> o.basePorosity),
+            Codec.FLOAT.fieldOf("permeabilityScale").forGetter(o -> o.permeabilityScale),
+            Codec.FLOAT.fieldOf("rechargeRate").forGetter(o -> o.rechargeRate),
+            Codec.FLOAT.fieldOf("pressureFactor").forGetter(o -> o.pressureFactor),
+            Codec.BOOL.OptionalFieldOf("simulateFlow").forGetter(o -> o.simulateFlow)
+        ).apply(instance, Aquifer::new));
+
+        public float basePorosity;
+        public float permeabilityScale;
+        public float rechargeRate;
+        public float pressureFactor;
+        public Boolean simulateFlow;
+
+        public Aquifer(float basePorosity, float permeabilityScale, float rechargeRate, float pressureFactor, Boolean simulateFlow) {
+            this.basePorosity = basePorosity;
+            this.permeabilityScale = permeabilityScale;
+            this.rechargeRate = rechargeRate;
+            this.pressureFactor = pressureFactor;
+            this.simulateFlow = simulateFlow;
+        }
+
+        public Aquifer copy() {
+            return new Aquifer(basePorosity, permeabilityScale, rechargeRate, pressureFactor, simulateFlow);
         }
     }
 
