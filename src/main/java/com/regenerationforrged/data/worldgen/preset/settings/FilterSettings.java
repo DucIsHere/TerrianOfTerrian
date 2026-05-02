@@ -328,26 +328,26 @@ public class FilterSettings {
             Codec.FLOAT.fieldOf("tideFrequency").forGetter(o -> o.tideFrequency),
             Codec.FLOAT.fieldOf("criticalAngle").forGetter(o -> o.criticalAngle)
         ).apply(instance, CoastalErosion::new));
-    }
 
-    public float baseWaterLevel;
-    public float erosionScale;
-    public float abrasionFactor;
-    public float tideAmplitude;
-    public float tideFrequency;
-    public float criticalAngle;
+        public float baseWaterLevel;
+        public float erosionScale;
+        public float abrasionFactor;
+        public float tideAmplitude;
+        public float tideFrequency;
+        public float criticalAngle;
 
-    public CoastalErosion(float baseWaterLevel, float erosionScale, float abrasionFactor, float tideAmplitude, float tideFrequency, float criticalAngle) {
-        this.baseWaterLevel = baseWaterLevel;
-        this.erosionScale = erosionScale;
-        this.abrasionFactor = abrasionFactor;
-        this.tideAmplitude = tideAmplitude;
-        this.tideFrequency = tideFrequency;
-        this.criticalAngle = criticalAngle;
-    }
+        public CoastalErosion(float baseWaterLevel, float erosionScale, float abrasionFactor, float tideAmplitude, float tideFrequency, float criticalAngle) {
+            this.baseWaterLevel = baseWaterLevel;
+            this.erosionScale = erosionScale;
+            this.abrasionFactor = abrasionFactor;
+            this.tideAmplitude = tideAmplitude;
+            this.tideFrequency = tideFrequency;
+            this.criticalAngle = criticalAngle;
+        }
 
-    public CoastalErosion copy() {
-        return new CoastalErosion(this.baseWaterLevel.copy(), this.erosionScale.copy(), this.abrasionFactor.copy(), this.tideAmplitude.copy(), this.tideFrequency.copy(), this.criticalAngle.copy());
+        public CoastalErosion copy() {
+            return new CoastalErosion(this.baseWaterLevel.copy(), this.erosionScale.copy(), this.abrasionFactor.copy(), this.tideAmplitude.copy(), this.tideFrequency.copy(), this.criticalAngle.copy());
+        }
     }
 
     public static class ThermalErosion {
