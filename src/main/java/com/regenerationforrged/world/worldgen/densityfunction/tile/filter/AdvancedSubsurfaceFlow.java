@@ -5,6 +5,8 @@ import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.world.worldgen.util.FastRandom;
+import com.regenerationforrged.world.worldgen.noise.NoiseUtil;
 
 import java.util.Arrays;
 import java.util.function.IntFunction;
@@ -16,22 +18,34 @@ import java.util.function.IntFunction;
 public class AdvancedSubsurfaceFlow implements Filter {
     private final int mapSize;
     private final float seaLevel;
-    private final FilterSettings.AdvancedSubsurfaceFlow advancedSubsurfaceFlow; // Trung tâm điều khiển toàn bộ hằng số vật lý
+    private final float baseViscosity;
+    private final float solubility;
+    private final float riverThreshold;
+    private final float flowMomentum;
+    private final float infiltrationRate;
+    private final float int iterations;
 
     private final Noise permeabilityNoise;
     private final Noise thermalNoise;
 
-    public AdvancedSubsurfaceFlow(int mapSize, GeneratorContext context) {
+    public AdvancedSubsurfaceFlow(int mapSize, float seaLevel, float baseViscosity, float solubility,
+                                  float riverThreshold, float flowMomentum, float infiltrationRate, int iterations) {
         this.mapSize = mapSize;
         this.seaLevel = context.levels.water;
-        // Kết nối trực tiếp với cấu hình trong FilterSettings
-        this.advancedSubsurfaceFlow = context.preset.filters().advancedSubsurfaceFlow();
+        this.baseViscosity = baseViscosity;
+        this.solubility = solubility;
+        this.riverThreshold = riverThreshold;
+        this.flowMomentum = flowMomentum;
+        this.infiltrationRate = infiltrationRate;
+        this.iterations iterations;
         this.permeabilityNoise = context.stabilityNoise;
         this.thermalNoise = context.continentalnessNoise;
     }
 
     @Override
-    public int getSize() { return this.mapSize; }
+    public int getSize() {
+        return this.mapSize;
+    }
 
     @Override
     public void apply(Filterable map, int seedX, int seedZ, int iterations) {

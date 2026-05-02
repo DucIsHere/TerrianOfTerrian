@@ -6,6 +6,7 @@ import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 
 public class ForceErosion implements Filter {
     private final int mapSize;
@@ -20,10 +21,12 @@ public class ForceErosion implements Filter {
     private final float upliftHeight;
     private final float upliftThreshold;
 
+    private final float iterations;
+
     private final Modifier modifier;
 
     public ForceErosion(int mapSize, Noise faultNoise, float faultDepth, float faultThreshold, float faultPower,
-                    Noise upliftNoise, float upliftHeight, float upliftThreshold, Modifier modifier
+                    Noise upliftNoise, float upliftHeight, float upliftThreshold, float iterations, Modifier modifier
     ) {
         this.mapSize = mapSize;
         this.faultNoise = faultNoise;
@@ -33,6 +36,7 @@ public class ForceErosion implements Filter {
         this.upliftNoise = upliftNoise;
         this.upliftHeight = upliftHeight;
         this.upliftThreshold = upliftThreshold;
+        this.iterations = iterations;
         this.modifier = modifier;
     }
 

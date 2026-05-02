@@ -16,6 +16,8 @@ public class AdvancedSoilFluction implements Filter {
     private final int iterations;
     private final FastRandom random;
 
+    private final int iterations;
+
     private final float baseFlowRate;       // Tốc độ chảy cơ bản
     private final float maxSedimentFlow;    // Giới hạn khối lượng di chuyển/tick
     private final float weatheringRate;     // Tốc độ phong hóa đá thành đất bùn

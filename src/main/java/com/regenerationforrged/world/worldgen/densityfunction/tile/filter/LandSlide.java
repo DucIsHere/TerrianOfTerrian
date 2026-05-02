@@ -6,6 +6,7 @@ import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 
 /**
  * LandSlide: Mô phỏng sạt lở khối và tạo hố sụt (Sinkholes) do đứt gãy địa chất.
@@ -15,12 +16,14 @@ public class LandSlide implements Filter {
     private final int mapSize;
     private final Noise stabilityNoise; 
     private final float collapseThreshold;
+    private final float iterations;
     private final Modifier modifier;
 
-    public LandSlide(int mapSize, Noise stabilityNoise, float collapseThreshold, Modifier modifier) {
+    public LandSlide(int mapSize, Noise stabilityNoise, float collapseThreshold, float iterations, Modifier modifier) {
         this.mapSize = mapSize;
         this.stabilityNoise = stabilityNoise;
         this.collapseThreshold = collapseThreshold;
+        this.iterations = iterations;
         this.modifier = modifier;
     }
 

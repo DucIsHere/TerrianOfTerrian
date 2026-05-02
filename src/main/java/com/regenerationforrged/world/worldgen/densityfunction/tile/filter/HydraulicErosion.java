@@ -306,7 +306,7 @@ public class HydraulicErosion implements Filter {
         private static final int SEED_OFFSET = 12768;
         private final int seed;
         private final Modifier modifier;
-        private final FilterSettings.Erosion settings;
+        private final FilterSettings.HydraulicErosion settings;
         
         private Factory(final int seed, final FilterSettings filters, final Levels levels) {
             this.seed = seed + 12768;

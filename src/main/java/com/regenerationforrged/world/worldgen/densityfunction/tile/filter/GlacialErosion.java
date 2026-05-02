@@ -23,36 +23,43 @@ public class GlacialErosion implements Filter {
     private final Modifier modifier;
     
     // Cài đặt vật lý chung
-    private final float accumulationRate = 0.02f;
-    private final float meltRate = 0.15f;
-    private final float viscosity = 0.1f; // Độ nhớt của băng (càng cao băng càng dễ chảy)
-    private final float pluckingProbability = 0.05f;
-    private final float pluckingRate = 0.05f;
+    private final float accumulationRate;
+    private final float meltRate;
+    private final float viscosity = 0.1F; // Độ nhớt của băng (càng cao băng càng dễ chảy)
+    private final float pluckingProbability;
+    private final float pluckingRate;
 
     // Cài đặt cho Hạt (Droplet)
     private final float erodeSpeed;
     private final float depositSpeed;
-    private final float initialSpeed = 0.25f;
-    private final float initialIceVolume = 1.2f;
-    private final int maxIceLifetime = 40;
+    private final float initialSpeed;
+    private final float initialIceVolume;
+    private final int maxIceLifetime;
+
+    private final float iterations;
     
     // Cấu trúc Brush cho mài mòn chi tiết
     private final int[][] erosionBrushIndices;
     private final float[][] erosionBrushWeights;
 
-    public GlacialErosion(int seed, int mapSize, float erodeSpeed, float depositSpeed, float snowLine, Modifier modifier) {
+    public GlacialErosion(int seed, int mapSize, float erodeSpeed, float depositSpeed, float snowLine, float iterations, Modifier modifier) {
         this.seed = seed;
         this.mapSize = mapSize;
         this.snowLine = snowLine;
         this.modifier = modifier;
         this.erodeSpeed = erodeSpeed;
         this.depositSpeed = depositSpeed;
+        this.iterations = iterations;
 
         this.erosionBrushIndices = new int[mapSize * mapSize][];
         this.erosionBrushWeights = new float[mapSize * mapSize][];
         
         // Khởi tạo cọ bào mòn (Bán kính 6 để tạo thung lũng rộng)
         this.initBrushes(6); 
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override

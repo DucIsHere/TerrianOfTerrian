@@ -19,19 +19,28 @@ public class AquiferFilter implements Filter {
     private final Size size;
     private final float seaLevel;
     private final Noise stabilityNoise;
-    private final FilterSettings.Aquifer settings;
+    private final float iterations;
+    private final float basePorosity;
+    private final float permeabilityScale;
+    private final float rechargeRate;
+    private final float pressureFactor;
 
     // Các hằng số vật lý mô phỏng
     private static final float GRAVITY = 9.81f;
     private static final float WATER_DENSITY = 1.0f;
 
-    public AquiferFilter(Size size, GeneratorContext context) {
+    public AquiferFilter(int mapSize, Size size, float seaLevel, float iterations,
+                         float basePorosity, float permeabilityScale, float rechargeRate, float pressureFactor,
+                         Noise stabilityNoise) {
         this.size = size;
         this.mapSize = mapSize();
         this.seaLevel = context.levels.water;
         this.stabilityNoise = context.stabilityNoise;
-        // Giả sử settings được lấy từ Preset trong Context
-        this.settings = context.preset.filters().aquifer(); 
+        this.iterations = iterations;
+        this.basePorosity = basePorosity;
+        this.permeabilityScale = permeabilityScale;
+        this.rechargeRate = rechargeRate;
+        this.pressureFactor = pressureFactor;
     }
 
     public int getSize() {

@@ -7,7 +7,8 @@ import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings.Eros
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings.Smoothing;
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings.GlacialErosion;
 import com.regenerationgorrged.data.worldgen.preset.settings.FilterSettings.SoilFluction;
-
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings.AdvancedSubsurfaceFlow;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings.Aquifer;
 import com.regenerationforrged.data.worldgen.preset.settings.RiverSettings.Lake;
 import com.regenerationforrged.data.worldgen.preset.settings.RiverSettings.River;
 import com.regenerationforrged.data.worldgen.preset.settings.RiverSettings.Wetland;

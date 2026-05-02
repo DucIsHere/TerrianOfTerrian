@@ -6,6 +6,7 @@ import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 
 /**
  * PhysicalSnowAvalanche: Mô phỏng lở tuyết dựa trên động lực học chất lỏng phi Newton.
@@ -13,7 +14,7 @@ import com.regenerationforrged.world.worldgen.noise.module.Noise;
  */
 public class PhysicalSnowAvalanche implements Filter {
     // --- HẰNG SỐ VẬT LÝ ĐỊA CHẤT ---
-    private static final float G = 9.806f;            // Gia tốc trọng trường (m/s^2)
+    private static final float Gravity = 9.806f;            // Gia tốc trọng trường (m/s^2)
     private static final float RHO_SNOW = 300.0f;     // Khối lượng riêng tuyết (kg/m^3)
     private static final float MU = 0.25f;            // Hệ số ma sát Coulomb (tuyết-đá)
     private static final float XI = 1500.0f;          // Hệ số ma sát nhớt (Turbulent friction)
@@ -21,14 +22,20 @@ public class PhysicalSnowAvalanche implements Filter {
 
     private final int mapSize;
     private final float minSnowHeight;
+    private final float iterations;
     private final Noise snowNoise;
     private final Modifier modifier;
 
-    public PhysicalSnowAvalanche(int mapSize, float minSnowHeight, Noise snowNoise, Modifier modifier) {
+    public PhysicalSnowAvalanche(int mapSize, float minSnowHeight, float iterations, Noise snowNoise, Modifier modifier) {
         this.mapSize = mapSize;
         this.minSnowHeight = minSnowHeight;
         this.snowNoise = snowNoise;
+        this.iterations = iterations;
         this.modifier = modifier;
+    }
+
+    public int getSize() {
+        return this.mapSize;
     }
 
     @Override

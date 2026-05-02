@@ -1,6 +1,7 @@
 package com.regenerationforrged.world.worldgen.densityfunction.tile.filter;
 
 import java.util.function.IntFunction;
+import java.util.Arrays;
 
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
@@ -17,15 +18,17 @@ public class AeroErosion implements Filter {
     private final float erodeStrength;
     private final float depositStrength;
     private final float minHeight;
+    private final float iterations
     private final Modifier modifier;
 
-    public AeroErosion(int mapSize, Noise windX, Noise windZ, float erodeStrength, float depositStrength, float minHeight, Modifier modifier) {
+    public AeroErosion(int mapSize, Noise windX, Noise windZ, float erodeStrength, float depositStrength, float minHeight, float iterations, Modifier modifier) {
         this.mapSize = mapSize;
         this.windX = windX;
         this.windZ = windZ;
         this.erodeStrength = erodeStrength;
         this.depositStrength = depositStrength;
         this.minHeight = minHeight;
+        this.iterations = iterations;
         this.modifier = modifier;
     }
 

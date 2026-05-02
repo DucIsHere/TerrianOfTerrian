@@ -5,6 +5,7 @@ import com.regenerationforrged.world.worldgen.data.worldgen.preset.settings.Filt
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
 import com.regenerationforrged.world.worldgen.noise.module.Noise;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings;
 
 import java.util.Arrays;
 import java.util.function.IntFunction;
@@ -29,14 +30,16 @@ public class CoastalErosion implements Filter {
     private final float tideAmplitude;      // Biên độ thủy triều (bao nhiêu block)
     private final float tideFrequency;      // Chu kỳ thủy triều
     private final float criticalAngle;      // Góc sạt lở tới hạn (Repose Angle)
+    private final float iterations;
     private final Modifier modifier;
 
-    public CoastalErosion(int mapSize, float waterLevel, Noise waveNoise, float erosionScale, float abrasionFactor, Modifier modifier) {
+    public CoastalErosion(int mapSize, float waterLevel, Noise waveNoise, float erosionScale, float abrasionFactor, float iterations, Modifier modifier) {
         this.mapSize = mapSize;
         this.baseWaterLevel = waterLevel;
         this.waveDirectionNoise = waveNoise;
         this.erosionScale = erosionScale;
         this.abrasionFactor = abrasionFactor;
+        this.iterations = iterations;
         this.modifier = modifier;
         
         // Cấu hình Thủy triều và Địa chất

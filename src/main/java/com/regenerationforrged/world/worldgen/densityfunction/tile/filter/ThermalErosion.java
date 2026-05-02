@@ -5,17 +5,20 @@ import java.util.function.IntFunction;
 import com.regenerationforrged.world.worldgen.GeneratorContext;
 import com.regenerationforrged.world.worldgen.cell.Cell;
 import com.regenerationforrged.world.worldgen.densityfunction.tile.Size;
+import com.regenerationforrged.data.worldgen.preset.settings.FilterSettings
 
 public class ThermalErosion implements Filter {
     private final int mapSize;
     private final float talusThreshold;
     private final float materialTransfer;
+    private finap float iterations;
     private final Modifier modifier;
 
-    public ThermalErosion(int mapSize, float talusThreshold, float materialTransfer, Modifier modifier) {
+    public ThermalErosion(int mapSize, float talusThreshold, float materialTransfer, float iterations, Modifier modifier) {
         this.mapSize = mapSize;
         this.talusThreshold = talusThreshold;
         this.materialTransfer = materialTransfer;
+        this.iterations = iterations;
         this.modifier = modifier;
     }
 
